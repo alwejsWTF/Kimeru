@@ -1,19 +1,20 @@
-from flask import Flask, request
+from flask import Flask, request, jsonify
+from flask_cors import CORS
 from sqlalchemy import create_engine, exists, select
 from config import credentials
 from sqlalchemy.orm import Session
 from user import User
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask_login import LoginManager
+from secrets import token_hex
+from flask_jwt_extended import JWTManager, create_access_token, jwt_required, unset_jwt_cookies, get_jwt
+from token_blocklist import TokenBlocklist
+from datetime import datetime, timezone
 
 app = Flask(__name__)
+app.secret_key = token_hex(16)
+cors = CORS(app)
 engine = create_engine(credentials)
-login_manager = LoginManager()
-login_manager.init_app(app)
-
-@login_manager.user_loader
-def load_user(user_id):
-    return get_user_by_id(user_id) 
+jwt = JWTManager(app)
 
 def add_user(nickname, password):
     with Session(engine) as session:
@@ -27,20 +28,21 @@ def check_user_exists(nickname):
     with Session(engine) as session:
         return session.scalar(exists().where(User.nick == nickname).select())
 
-def get_user_by_id(user_id):
-    with Session(engine) as session:
-        statement = select(User).filter_by(id=user_id)
-        user_obj = session.scalars(statement).first()
-        return user_obj
-
-def get_user_by_nickname(nickname):
+def get_user(nickname):
     with Session(engine) as session:
         statement = select(User).filter_by(nick=nickname)
         user_obj = session.scalars(statement).first()
         return user_obj
 
+@jwt.token_in_blocklist_loader
+def check_jwt_revoked(jwt_header, jwt_payload: dict) -> bool:
+    with Session(engine) as session:
+        jti = jwt_payload["jti"]        
+        token = session.scalar(select(TokenBlocklist.id).filter_by(jti=jti))
+        return token is not None
 
 @app.get("/")
+@jwt_required()
 def hello_world():
     return "<p>Hello, World!</p>"
 
@@ -58,16 +60,28 @@ def register():
 @app.post("/login")
 def login():
     credentials = request.json
-    user = get_user_by_nickname(credentials["nickname"])
+    user = get_user(credentials["nickname"])
     if user is None:
         response = {"message": "Incorrect nickname"}
         return response, 400
     if check_password_hash(user.password, credentials["password"]):
-        load_user(user.id)
-        response = {"message": "Successfully loged in"}
+        token = create_access_token(identity=user.nick)
+        response = {"message": "Successfully loged in",
+                    "token": token}
         return response, 200
     else:
         response = {"message": "Incorrect password"}
         return response, 400
 
-
+@app.delete("/logout")
+@jwt_required()
+def logout():
+    jti = get_jwt()["jti"] 
+    now = datetime.now(timezone.utc)
+    with Session(engine) as session:
+        token = TokenBlocklist(jti = jti,
+                               creation_time = now)
+        session.add(token)
+        session.commit()
+    response = {"message": "Successfully loged out"}
+    return response, 200
