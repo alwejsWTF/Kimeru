@@ -8,8 +8,7 @@ export default function NavigationBar() {
     <>
       <Navbar className="bg-secondary">
         <Nav className="mx-3">
-          <Nav.Link to="/login" as={NavLink}>Login</Nav.Link>
-          <Nav.Link to="/register" as={NavLink}>Register</Nav.Link>
+          <Nav.Link to="/auth" as={NavLink}>Login</Nav.Link>
         </Nav>
       </Navbar>
     </>
