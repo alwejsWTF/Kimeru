@@ -7,6 +7,9 @@ import { v4 as uuidv4 } from 'uuid';
 import { useState } from 'react';
 import HomePage from './components/HomePage';
 import { BrowserRouter } from 'react-router-dom'
+import ProblemsPage from './components/ProblemsPage';
+import RankingPage from './components/RankingPage';
+import ProfilePage from './components/ProfilePage';
 
 
 function App() {
@@ -28,12 +31,15 @@ function App() {
 
   return (
     <BrowserRouter>
-      <NavigationBar />
+      <NavigationBar token={token} />
       <AlertContainer alerts={alerts} setAlerts={setAlerts} />
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="auth" element={<AuthenticationLayout setToken={setToken} addAlert={addAlert}/>} />
         <Route path="test" element={<h1>Hello World!</h1>} />
+        <Route path="problems" element={<ProblemsPage />} />
+        <Route path="ranking" element={<RankingPage />} />
+        <Route path="profile" element={<ProfilePage />} />
       </Routes>
     </BrowserRouter>
   );
