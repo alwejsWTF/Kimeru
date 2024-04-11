@@ -11,11 +11,11 @@ export default function AlertContainer({alerts, setAlerts}) {
   return (
     <ToastContainer className="position-absolute mx-auto start-0 end-0">
       {alerts.map(alert => (
-        <Toast key={alert.id} onClose={() => {closeAlert(alert.id)}}>
+        <Toast key={alert.id} bg={alert.type} onClose={() => {closeAlert(alert.id)}}>
           <Toast.Header>
             <strong className="me-auto">{alert.title}</strong>
           </Toast.Header>
-          <Toast.Body>{alert.message}</Toast.Body>
+          <Toast.Body className="text-white">{alert.message}</Toast.Body>
         </Toast>
       ))}
     </ToastContainer>

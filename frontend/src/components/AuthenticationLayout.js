@@ -1,11 +1,12 @@
 import axios from 'axios'
 import { useState } from 'react'
+import { useNavigate } from "react-router-dom";
 import Button from 'react-bootstrap/Button'
 import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form'
 import '../styles/auth.css'
 
-export default function AuthenticationLayout({setToken}) {
+export default function AuthenticationLayout({setToken, addAlert}) {
 
   let [nickname, setNickname] = useState("");
   let [password, setPassword] = useState("");
@@ -13,6 +14,8 @@ export default function AuthenticationLayout({setToken}) {
   let [formTitle, setFormTitle] = useState("Sign in");
   let [authModeText, setAuthModeText] = useState("Still don't have an account?");
   let [authModeLink, setAuthModeLink] = useState("Sign up");
+
+  const navigate = useNavigate();
 
   const changeAuthMode = () => {
     setFormTitle(authMode === "login" ? "Sign up" : "Sign in");
@@ -30,8 +33,11 @@ export default function AuthenticationLayout({setToken}) {
     try {
       const response = await axios.post("http://127.0.0.1:5000/login", credentials);
       setToken(response.data.token);
+      addAlert("Login", response.data.message, "success");
+      navigate("/");
     } catch(err) {
       console.log(err);
+      addAlert("Login", err.response.data.message, "danger")
     }
   }
 
@@ -42,8 +48,10 @@ export default function AuthenticationLayout({setToken}) {
     }
     try {
       const response = await axios.post("http://127.0.0.1:5000/register", credentials);
+      addAlert("Login", response.data.message, "success");
+      loginUser();
     } catch(err) {
-      console.log(err);
+      addAlert("Register", err.response.data.message, "danger");
     }
   }
 
