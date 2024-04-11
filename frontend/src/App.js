@@ -31,7 +31,7 @@ function App() {
 
   return (
     <BrowserRouter>
-      <NavigationBar token={token} />
+      <NavigationBar token={token} setToken={setToken} addAlert={addAlert} />
       <AlertContainer alerts={alerts} setAlerts={setAlerts} />
       <Routes>
         <Route path="/" element={<HomePage />} />
