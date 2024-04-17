@@ -1,0 +1,21 @@
+.ranking-container {
+    padding: 20px;
+}
+  
+.ranking-table {
+    width: 100%;
+    background-color: #333;
+    color: #fff;
+    border-collapse: collapse;
+}
+  
+.ranking-table th,
+.ranking-table td {
+    padding: 15px;
+    border: 1px solid #444;
+}
+  
+.ranking-table th {
+    background-color: #222;
+}
+  

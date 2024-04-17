@@ -1,0 +1,29 @@
+.home-container {
+    text-align: center;
+    padding: 50px 20px;
+}
+  
+.header {
+    margin-bottom: 30px;
+}
+
+.text {
+  margin-bottom: 30px;
+}
+
+.link {
+    background-color: #61dafb;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    text-decoration: none;
+    display: inline-block;
+    transition: background-color 0.2s;
+    margin: 5px;
+}
+  
+.link:hover {
+    background-color: #409ecf;
+}
+  

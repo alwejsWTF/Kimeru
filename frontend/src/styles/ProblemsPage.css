@@ -1,0 +1,18 @@
+.problems-container {
+    padding: 20px;
+}
+  
+.problem-link {
+    display: block;
+    background-color: #333;
+    color: #fff;
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
+  
+.problem-link:hover {
+    background-color: #777777;
+}
+  

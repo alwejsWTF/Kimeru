@@ -1,0 +1,31 @@
+.editorContainer {
+    position: relative;
+    padding: 20px;
+    background-color: #1e1e1e;
+    color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+  
+.editorHeader {
+    margin-bottom: 10px;
+}
+
+.formControl {
+    margin-bottom: 20px;
+}
+  
+.submitButton {
+    background-color: #5cb85c;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 18px;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
+  
+.submitButton:hover {
+    background-color: #45a049;
+}
+  

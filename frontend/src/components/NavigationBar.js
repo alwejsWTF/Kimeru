@@ -1,9 +1,9 @@
 import axios from 'axios';
-import Nav from 'react-bootstrap/Nav';
-import Navbar from 'react-bootstrap/Navbar';
+import { Navbar, Nav } from 'react-bootstrap';
 import { NavLink } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import * as routes from '../config/routes';
+import '../styles/NavigationBar.css'
 
 export default function NavigationBar({addAlert}) {
 
@@ -21,15 +21,19 @@ export default function NavigationBar({addAlert}) {
 
   return (
     <>
-      <Navbar className="bg-secondary">
-        <Nav className="mx-3 container-fluid">
-          <Nav.Link to="/" as={NavLink}>Home</Nav.Link>
-          <Nav.Link to="/problems" as={NavLink}>Problems</Nav.Link>
-          <Nav.Link to="/ranking" as={NavLink}>Ranking</Nav.Link>
-          <Nav.Link to="/profile" as={NavLink}>Profile</Nav.Link>
-          <Nav.Link className="ms-auto" to="/auth" as={NavLink}>Sign in</Nav.Link>
-          <Nav.Link className="ms-auto" onClick={logOut}>Logout</Nav.Link>
-        </Nav>
+      <Navbar expand="md">
+        <Navbar.Brand href="/" className="ms-4">SPOJ</Navbar.Brand>
+        <Navbar.Toggle aria-controls="basic-navbar-nav" />
+        <Navbar.Collapse id="basic-navbar-nav">
+          <Nav className="mx-3 container-fluid">
+            <Nav.Link to="/problems" as={NavLink}>Problems</Nav.Link>
+            <Nav.Link to="/ranking" as={NavLink}>Ranking</Nav.Link>
+            <Nav.Link to="/profile" as={NavLink}>Profile</Nav.Link>
+            <Nav.Link to="/environment" as={NavLink}>Code Editor</Nav.Link>
+            <Nav.Link className="ms-auto" to="/auth" as={NavLink}>Sign in</Nav.Link>
+            <Nav.Link className="ms-auto" onClick={logOut}>Logout</Nav.Link>
+          </Nav>
+        </Navbar.Collapse>
       </Navbar>
     </>
   )

@@ -1,0 +1,11 @@
+.footer {
+    bottom: 0;
+    width: 100%;
+    background-color: #c97676;
+    padding: 20px 0;
+    text-align: center;
+}
+
+.fo-text {
+    color: rgb(80, 26, 26);
+}

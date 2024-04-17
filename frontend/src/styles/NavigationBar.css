@@ -1,0 +1,22 @@
+.navbar {
+    background-color: #c97676;
+    border-bottom: 1px solid #444;
+}
+  
+.navbar-brand, .nav-link {
+    color: #fff;
+}
+  
+.nav-link:hover {
+    background-color: #af2c2c;
+}
+
+.nav-link {
+    padding: 10px 15px;
+    font-size: 16px;
+  }
+  
+.navbar-toggle {
+    background-color: #777;
+}
+  
