@@ -1,12 +1,14 @@
-import axios from 'axios'
-import { useState } from 'react'
+import axios from 'axios';
+import { useState } from 'react';
 import { useNavigate } from "react-router-dom";
-import Button from 'react-bootstrap/Button'
+import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
-import Form from 'react-bootstrap/Form'
-import '../styles/auth.css'
+import Form from 'react-bootstrap/Form';
+import '../styles/auth.css';
+import getCookie from '../utils/functions';
+import * as routes from '../config/routes';
 
-export default function AuthenticationLayout({setToken, addAlert}) {
+export default function AuthenticationLayout({addAlert}) {
 
   let [nickname, setNickname] = useState("");
   let [password, setPassword] = useState("");
@@ -31,8 +33,11 @@ export default function AuthenticationLayout({setToken, addAlert}) {
       "password": password
     }
     try {
-      const response = await axios.post("http://127.0.0.1:5000/login", credentials);
-      setToken(response.data.token);
+      const response = await axios.post(routes.SIGN_IN, credentials, {withCredentials: true});
+
+      //change axios settings for POST so it always includes X-CSRF-TOKEN and JWT cookie
+      axios.defaults.headers.post["X-CSRF-TOKEN"] = getCookie("csrf_access_token");
+      axios.defaults.withCredentials = true;
       addAlert("Login", response.data.message, "success");
       navigate("/");
     } catch(err) {
@@ -47,7 +52,7 @@ export default function AuthenticationLayout({setToken, addAlert}) {
       "password": password
     }
     try {
-      const response = await axios.post("http://127.0.0.1:5000/register", credentials);
+      const response = await axios.post(routes.SIGN_UP, credentials);
       addAlert("Login", response.data.message, "success");
       loginUser();
     } catch(err) {

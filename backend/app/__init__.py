@@ -8,6 +8,6 @@ from app.main import initialize_app
 def create_app():
     app = initialize_app()
     app.secret_key = token_hex(16)
-    cors = CORS(app)
+    cors = CORS(app, supports_credentials=True)
 
     return app

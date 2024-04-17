@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from flask import Flask, request
+from flask import Flask, request, jsonify
 import flask_jwt_extended as fje
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -10,6 +10,9 @@ from app.auth.authentication import Authentication
 from config import Config
 
 app = Flask(__name__)
+app.config["JWT_TOKEN_LOCATION"] = ["cookies"]
+app.config["JWT_COOKIE_SAMESITE"] = "None"
+app.config["JWT_COOKIE_SECURE"] = True
 engine = create_engine(Config.CREDENTIALS)
 Session = sessionmaker(engine)
 jwt = fje.JWTManager(app)
@@ -26,7 +29,6 @@ def check_jwt_revoked(jwt_header, jwt_payload: dict) -> bool:
 
 
 @app.route("/")
-@fje.jwt_required()
 def test_page():
     return "<h1>Hello World!</h1>"
 
@@ -53,19 +55,20 @@ def login():
         return response, 400
     if check_password_hash(user.password, credentials["password"]):
         token = fje.create_access_token(identity=user.nick)
-        response = {"message": "Successfully loged in",
-                    "token": token}
+        response = jsonify({"message": "Successfully loged in"})
+        fje.set_access_cookies(response, token)
         return response, 200
     else:
         response = {"message": "Incorrect password"}
         return response, 400
 
 
-@app.delete("/logout")
+@app.post("/logout")
 @fje.jwt_required()
 def logout():
     jti = fje.get_jwt()["jti"]
     now = datetime.now()
     auth.block_token(jti, now)
-    response = {"message": "Successfully loged out"}
+    response = jsonify({"message": "Successfully loged out"})
+    fje.unset_jwt_cookies(response)
     return response, 200
