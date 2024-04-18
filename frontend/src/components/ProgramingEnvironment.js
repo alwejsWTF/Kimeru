@@ -15,7 +15,7 @@ function ProgrammingEnvironment() {
             <Form.Group controlId="formLanguageSelect">
               <Form.Label>Select Language</Form.Label>
               <Form.Control as="select" className="formControl" value={language} onChange={(e) => setLanguage(e.target.value)}>
-                <option value="c_cpp">C/C++</option>
+                <option value="c_cpp">C</option>
                 <option value="python">Python</option>
               </Form.Control>
             </Form.Group>

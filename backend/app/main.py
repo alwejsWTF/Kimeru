@@ -5,6 +5,8 @@ import flask_jwt_extended as fje
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from werkzeug.security import check_password_hash
+from werkzeug.utils import secure_filename
+import os
 
 from app.auth.authentication import Authentication
 from config import Config
@@ -17,6 +19,8 @@ engine = create_engine(Config.CREDENTIALS)
 Session = sessionmaker(engine)
 jwt = fje.JWTManager(app)
 auth = Authentication(Session)
+
+ALLOWED_EXTENSIONS = {'py', 'c'}
 
 
 def initialize_app():
@@ -72,3 +76,24 @@ def logout():
     response = jsonify({"message": "Successfully loged out"})
     fje.unset_jwt_cookies(response)
     return response, 200
+
+@app.post("/problems/<problem_id>/upload")
+def upload_file(problem_id):
+    if 'sourceCode' not in request.files:
+        return jsonify(message='No file part'), 400
+
+    file = request.files['sourceCode']
+    if file.filename == '':
+        return jsonify(message='No selected file'), 400
+
+    if file and '.' in file.filename and file.filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS:
+        filename = secure_filename(file.filename)
+        # testing purpose
+        save_directory = os.path.join('./resources', problem_id)
+        if not os.path.exists(save_directory):
+            os.makedirs(save_directory)
+        file_path = os.path.join(save_directory, filename)
+        file.save(file_path)
+        return jsonify(message='File uploaded successfully', filename=filename), 200
+    else:
+        return jsonify(message='Invalid file extension'), 400

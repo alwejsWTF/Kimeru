@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Container, ListGroup } from 'react-bootstrap';
 import '../styles/ProblemsPage.css'
 
-function Problems() {
+function ProblemsPage() {
   const [problems, setProblems] = useState([]);
 
   useEffect(() => {
@@ -35,4 +35,4 @@ function Problems() {
   );
 }
 
-export default Problems;
+export default ProblemsPage;

@@ -12,6 +12,7 @@ import RankingPage from './components/RankingPage';
 import ProfilePage from './components/ProfilePage';
 import ProgramingEnvironment from './components/ProgramingEnvironment';
 import Footer from './components/Footer';
+import ProblemDetail from './components/ProblemDetail';
 
 import './styles/App.css';
 
@@ -43,6 +44,7 @@ function App() {
           <Route path="auth" element={<AuthenticationLayout addAlert={addAlert}/>} />
           <Route path="test" element={<h1>Hello World!</h1>} />
           <Route path="problems" element={<ProblemsPage />} />
+          <Route path="/problems/:id" element={<ProblemDetail addAlert={addAlert}/>} />
           <Route path="ranking" element={<RankingPage />} />
           <Route path="profile" element={<ProfilePage />} />
           <Route path="environment" element={<ProgramingEnvironment />} />
