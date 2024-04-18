@@ -1,4 +1,5 @@
 import os
+import json
 import logging
 import subprocess
 
@@ -49,7 +50,7 @@ def serve():
             logging.error(errmsg)
             return { "error": errmsg }
 
-        test_results = []
+        res = { "test_results": [] }
         for i, test in enumerate(content["tests"]):
             input = test["input"].encode("utf-8")
             expected = test["expected"]
@@ -66,11 +67,11 @@ def serve():
                 logging.info(f"Return code: {result.returncode}")
                 logging.info(f"Expected: {expected}")
                 logging.info(f"Got: {result.stdout}")
-                test_results.append(False)
+                res["test_results"].append(False)
             else:
                 print(f"Test {i} passed")
-                test_results.append(True)
+                res["test_results"].append(True)
 
-        return test_results
+        return json.dumps(res).encode("utf-8")
     except KeyError:
         return { "error": "Invalid data" }
