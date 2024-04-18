@@ -2,14 +2,23 @@ from datetime import datetime
 
 from flask import Flask, request, jsonify
 import flask_jwt_extended as fje
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, select, exists
 from sqlalchemy.orm import sessionmaker
 from werkzeug.security import check_password_hash
 from werkzeug.utils import secure_filename
+
 import os
+import random
+import logging
+import threading
 
 from app.auth.authentication import Authentication
+from app.models.test import Test
+from app.models.task import Task
+from app.executor import process_submission
 from config import Config
+
+logging.basicConfig(level=logging.DEBUG)
 
 app = Flask(__name__)
 app.config["JWT_TOKEN_LOCATION"] = ["cookies"]
@@ -21,6 +30,14 @@ jwt = fje.JWTManager(app)
 auth = Authentication(Session)
 
 ALLOWED_EXTENSIONS = {'py', 'c'}
+SUPPORTED_LANGUAGES = {'c', 'python'}
+
+BUSY_PORTS = set()
+PORTS_LOCK = threading.Lock()
+BUSY_PORTS_LIMIT = 100
+MIN_PORT = 49152
+MAX_PORT = 65536
+PORT_ALLOC_RETRIES_LIMIT = 10
 
 
 def initialize_app():
@@ -97,3 +114,63 @@ def upload_file(problem_id):
         return jsonify(message='File uploaded successfully', filename=filename), 200
     else:
         return jsonify(message='Invalid file extension'), 400
+
+@app.post("/problems/<problem_id>/submit")
+def submit(problem_id):
+    req = request.get_json()
+
+    if 'lang' not in req:
+        return jsonify(message='No language specified'), 400
+    if 'code' not in req:
+        return jsonify(message='No source code provided'), 400
+    if req['lang'] not in SUPPORTED_LANGUAGES:
+        return jsonify(
+            message=f"The {req['lang']} language is not supported"
+        ), 400
+
+    statement = select(Test).filter_by(task=problem_id)
+    tests = []
+    with Session() as session:
+        if not session.scalar(exists().where(Task.id == problem_id).select()):
+            return jsonify(
+                message=f"The problem with id {problem_id} does not exists"
+            ), 400
+        testObjs = session.scalars(statement).all()
+        for t in testObjs:
+            tests.append({
+                "input": t.input,
+                "expected": t.expected_output,
+            })
+
+    port = -1
+    try:
+        PORTS_LOCK.acquire()
+
+        if len(BUSY_PORTS) > BUSY_PORTS_LIMIT:
+            return jsonify(message="Too much traffic. Come back later"), 500
+
+        port = random.randint(MIN_PORT, MAX_PORT + 1)
+        alloc_try = 0
+        while port in BUSY_PORTS:
+            port = random.randint(MIN_PORT, MAX_PORT + 1), 500
+            alloc_try += 1
+            if alloc_try >= PORT_ALLOC_RETRIES_LIMIT:
+                return jsonify(message="Failed to allocate port"), 500
+
+        BUSY_PORTS.add(port)
+        logging.debug(f"Aquired {port} port")
+    finally:
+        PORTS_LOCK.release()
+
+    if port not in range(MIN_PORT, MAX_PORT + 1):
+        return jsonify(message="What the hell?!"), 500
+
+    result = process_submission(req['lang'], req['code'], tests, port)
+
+    try:
+        PORTS_LOCK.acquire()
+        BUSY_PORTS.remove(port)
+    finally:
+        PORTS_LOCK.release()
+
+    return result
