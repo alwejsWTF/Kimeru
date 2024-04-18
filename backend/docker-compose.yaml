@@ -9,4 +9,4 @@ services:
     env_file:
       - .env
     volumes:
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./sql/:/docker-entrypoint-initdb.d/
