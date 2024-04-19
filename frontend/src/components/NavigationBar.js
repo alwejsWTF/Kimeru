@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import * as routes from '../config/routes';
 import '../styles/NavigationBar.css'
 
-export default function NavigationBar({addAlert}) {
+export default function NavigationBar({addAlert, loggedIn, setLoggedIn}) {
 
   const navigate = useNavigate();
 
@@ -13,6 +13,7 @@ export default function NavigationBar({addAlert}) {
     try {
       const response = await axios.post(routes.SIGN_OUT, {});
       addAlert("Logout", response.data.message, "success");
+      setLoggedIn(false);
       navigate("/");
     } catch(err) {
       addAlert("Logout", err.response.data.message, "danger");
@@ -28,10 +29,10 @@ export default function NavigationBar({addAlert}) {
           <Nav className="mx-3 container-fluid">
             <Nav.Link to="/problems" as={NavLink}>Problems</Nav.Link>
             <Nav.Link to="/ranking" as={NavLink}>Ranking</Nav.Link>
-            <Nav.Link to="/profile" as={NavLink}>Profile</Nav.Link>
+            <Nav.Link to="/profile" as={NavLink} hidden={!loggedIn}>Profile</Nav.Link>
             <Nav.Link to="/environment" as={NavLink}>Code Editor</Nav.Link>
-            <Nav.Link className="ms-auto" to="/auth" as={NavLink}>Sign in</Nav.Link>
-            <Nav.Link className="ms-auto" onClick={logOut}>Logout</Nav.Link>
+            <Nav.Link className="ms-auto" hidden={loggedIn} to="/auth" as={NavLink}>Sign in</Nav.Link>
+            <Nav.Link className="ms-auto" hidden={!loggedIn} onClick={logOut}>Logout</Nav.Link>
           </Nav>
         </Navbar.Collapse>
       </Navbar>

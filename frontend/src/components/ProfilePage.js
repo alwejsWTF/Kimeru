@@ -1,13 +1,25 @@
+import axios from 'axios';
 import { useState, useEffect } from 'react';
 import { Container, Card } from 'react-bootstrap';
+import * as routes from '../config/routes';
 import '../styles/ProfilePage.css';
 
-function Profile() {
+
+function Profile({loggedIn, addAlert}) {
   const [userProfile, setUserProfile] = useState('');
 
+  const getUserInfo = async () => {
+    try {
+      const response = await axios.get(routes.GET_PROFILE_INFO);
+      setUserProfile({ username: response.data.username, email: 'user1@example.com' });
+    } catch(err) {
+      addAlert("Profile", err.response.data.message, "danger");
+    }
+  }
+
   useEffect(() => {
-    setUserProfile({ username: 'User1', email: 'user1@example.com' });
-  }, []);
+    getUserInfo();
+  }, [loggedIn]);
 
   return (
     <Container className="profile-container">

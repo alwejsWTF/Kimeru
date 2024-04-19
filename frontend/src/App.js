@@ -19,7 +19,7 @@ import './styles/App.css';
 
 function App() {
 
-  let [token, setToken] = useState(null);
+  let [loggedIn, setLoggedIn] = useState(false);
   let [alerts, setAlerts] = useState([]);
 
 
@@ -37,16 +37,16 @@ function App() {
   return (
     <BrowserRouter>
       <Container>
-        <NavigationBar token={token} setToken={setToken} addAlert={addAlert} />
+        <NavigationBar addAlert={addAlert} loggedIn={loggedIn} setLoggedIn={setLoggedIn} />
         <AlertContainer alerts={alerts} setAlerts={setAlerts} />
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="auth" element={<AuthenticationLayout addAlert={addAlert}/>} />
+          <Route path="auth" element={<AuthenticationLayout setLoggedIn={setLoggedIn} addAlert={addAlert}/>} />
           <Route path="test" element={<h1>Hello World!</h1>} />
           <Route path="problems" element={<ProblemsPage />} />
           <Route path="/problems/:id" element={<ProblemDetail addAlert={addAlert}/>} />
           <Route path="ranking" element={<RankingPage />} />
-          <Route path="profile" element={<ProfilePage />} />
+          <Route path="profile" element={<ProfilePage loggedIn={loggedIn} addAlert={addAlert}/>} />
           <Route path="environment" element={<ProgramingEnvironment />} />
         </Routes>
         <Footer/>

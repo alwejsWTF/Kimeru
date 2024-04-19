@@ -1,3 +1,6 @@
+from datetime import datetime, timedelta
+
+import flask_jwt_extended as fje
 from sqlalchemy import exists, select
 from werkzeug.security import generate_password_hash
 
@@ -41,3 +44,15 @@ class Authentication:
             token = session.scalar(select(TokenBlocklist.id)
                                    .filter_by(jti=jti))
             return token is not None
+
+    def refresh_expiring_jwts(self, response):
+        try:
+            exp_timestamp = fje.get_jwt()["exp"]
+            now = datetime.now()
+            target_timestamp = datetime.timestamp(now + timedelta(minutes=30))
+            if target_timestamp > exp_timestamp:
+                jwt = fje.create_access_token(identity=fje.get_jwt_identity())
+                fje.set_access_cookies(response, jwt)
+            return response
+        except (RuntimeError, KeyError):
+            return response

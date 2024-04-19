@@ -15,6 +15,7 @@ import threading
 from app.auth.authentication import Authentication
 from app.models.test import Test
 from app.models.task import Task
+from app.models.user import User
 from app.executor import process_submission
 from config import Config
 
@@ -93,6 +94,22 @@ def logout():
     response = jsonify({"message": "Successfully loged out"})
     fje.unset_jwt_cookies(response)
     return response, 200
+
+
+@app.get("/profile")
+@fje.jwt_required()
+def get_profile():
+    identity = fje.get_jwt_identity()
+    with Session() as session:
+        user_exists = session.scalar(exists()
+                                     .where(User.nick == identity).select())
+        if user_exists:
+            response = {"username": identity}
+            return response, 200
+        else:
+            response = {"message": "User cannot be found"}
+            return response, 404
+
 
 @app.post("/problems/<problem_id>/upload")
 def upload_file(problem_id):

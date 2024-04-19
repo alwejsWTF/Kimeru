@@ -8,7 +8,7 @@ import '../styles/auth.css';
 import getCookie from '../utils/functions';
 import * as routes from '../config/routes';
 
-export default function AuthenticationLayout({addAlert}) {
+export default function AuthenticationLayout({setLoggedIn, addAlert}) {
 
   let [nickname, setNickname] = useState("");
   let [password, setPassword] = useState("");
@@ -39,6 +39,7 @@ export default function AuthenticationLayout({addAlert}) {
       axios.defaults.headers.post["X-CSRF-TOKEN"] = getCookie("csrf_access_token");
       axios.defaults.withCredentials = true;
       addAlert("Login", response.data.message, "success");
+      setLoggedIn(true);
       navigate("/");
     } catch(err) {
       console.log(err);
