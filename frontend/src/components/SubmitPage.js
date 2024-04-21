@@ -33,7 +33,7 @@ function SubmitPage({ addAlert }) {
 
     const payload = {
       code: editorContent,
-      lang: language
+      lang: language === 'c_cpp' ? 'c' : language
     };
 
     try {
