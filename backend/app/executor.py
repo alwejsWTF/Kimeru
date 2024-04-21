@@ -6,10 +6,10 @@ from docker.errors import ImageNotFound
 import urllib3
 import time
 
-
 docker_client = docker.from_env()
 
 IMAGE_NAME = "judge"
+
 
 def load_image():
     print(f"Loading \"{IMAGE_NAME}\" image...")
@@ -18,20 +18,21 @@ def load_image():
         print("Image already loaded")
     except ImageNotFound:
         print("Creating image from Dockerfile...")
-        docker_client.images.build(path="./verifier/", tag=IMAGE_NAME)
+        docker_client.images.build(path="./app/verifier/", tag=IMAGE_NAME)
 
 
 def process_submission(lang, code, tests, port):
     load_image()
 
     container_name = f"{IMAGE_NAME}-{port}"
-    command = f"flask --app verifier run -p {port}"
+    command = f"flask --app verifier run --host=0.0.0.0 -p {port}"
 
-    res = { "status": "failure" }
+    res = {"status": "failure"}
     try:
         docker_client.containers.run(IMAGE_NAME,
                                      detach=True,
-                                     network_mode='host',
+                                     ports={port: port},
+                                     #network_mode='host',
                                      name=container_name,
                                      command=command)
 
