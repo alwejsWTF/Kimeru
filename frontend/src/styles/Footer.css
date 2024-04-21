@@ -1,11 +1,12 @@
 .footer {
     bottom: 0;
     width: 100%;
-    background-color: #c97676;
+    background: linear-gradient(to top, rgb(117, 0, 206), rgb(162, 97, 176) 70%, rgb(188, 148, 197));
     padding: 20px 0;
+    margin-top: 20px;
     text-align: center;
 }
 
 .fo-text {
-    color: rgb(80, 26, 26);
+    color: rgb(0, 0, 0);
 }

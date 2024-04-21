@@ -1,8 +1,7 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { v4 as uuidv4 } from 'uuid';
 import { useState } from 'react';
-import { Container } from 'react-bootstrap'
-
+import React, { useEffect } from 'react';
 import HomePage from './components/HomePage';
 import AlertContainer from './components/AlertContainer';
 import AuthenticationLayout from './components/AuthenticationLayout';
@@ -10,9 +9,8 @@ import NavigationBar from './components/NavigationBar';
 import ProblemsPage from './components/ProblemsPage';
 import RankingPage from './components/RankingPage';
 import ProfilePage from './components/ProfilePage';
-import ProgramingEnvironment from './components/ProgramingEnvironment';
 import Footer from './components/Footer';
-import ProblemDetail from './components/ProblemDetail';
+import SubmitPage from './components/SubmitPage';
 
 import './styles/App.css';
 
@@ -33,10 +31,21 @@ function App() {
     setAlerts([...alerts, alert]);
   }
 
+  useEffect(() => {
+    const link = document.createElement('link');
+    link.href = 'https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap';
+    link.rel = 'stylesheet';
+    document.head.appendChild(link);
+    
+    return () => {
+      document.head.removeChild(link);
+    };
+  }, []);
+
 
   return (
-    <BrowserRouter>
-      <Container>
+    <div className="app">
+      <BrowserRouter>
         <NavigationBar addAlert={addAlert} loggedIn={loggedIn} setLoggedIn={setLoggedIn} />
         <AlertContainer alerts={alerts} setAlerts={setAlerts} />
         <Routes>
@@ -44,14 +53,13 @@ function App() {
           <Route path="auth" element={<AuthenticationLayout setLoggedIn={setLoggedIn} addAlert={addAlert}/>} />
           <Route path="test" element={<h1>Hello World!</h1>} />
           <Route path="problems" element={<ProblemsPage />} />
-          <Route path="/problems/:id" element={<ProblemDetail addAlert={addAlert}/>} />
+          <Route path="problems/:id/submit" element={<SubmitPage addAlert={addAlert}/>} />
           <Route path="ranking" element={<RankingPage />} />
           <Route path="profile" element={<ProfilePage loggedIn={loggedIn} addAlert={addAlert}/>} />
-          <Route path="environment" element={<ProgramingEnvironment />} />
         </Routes>
         <Footer/>
-      </Container>
-    </BrowserRouter>
+      </BrowserRouter>
+    </div>
   );
 }
 

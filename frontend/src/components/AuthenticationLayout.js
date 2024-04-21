@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
-import '../styles/auth.css';
+import '../styles/AuthenticationLayout.css';
 import getCookie from '../utils/functions';
 import * as routes from '../config/routes';
 
@@ -66,8 +66,8 @@ export default function AuthenticationLayout({setLoggedIn, addAlert}) {
   }
 
   return (
-    <Container className="auth-container mt-5">
-      <Form className="d-flex flex-column border px-4 py-5">
+    <Container className="font auth-container mt-5">
+      <Form className="d-flex flex-column border px-4 py-5 card-background">
         <h1 className="text-center mb-3">{formTitle}</h1>
         <Form.Group className="mb-3">
           <Form.Label>Nickname: </Form.Label>
@@ -82,7 +82,7 @@ export default function AuthenticationLayout({setLoggedIn, addAlert}) {
         <Form.Text className="text-center mb-4">
           {authModeText} <span type="button" className="text-primary" onClick={changeAuthMode}>{authModeLink}</span>
         </Form.Text>
-        <Button onClick={performAuthAction}>Submit</Button>
+        <Button onClick={performAuthAction} className='bannerButton'>Submit</Button>
       </Form>
     </Container>
   )

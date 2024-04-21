@@ -1,18 +1,49 @@
 .problems-container {
     padding: 20px;
+    margin-bottom: 40px;
 }
   
 .problem-link {
-    display: block;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     background-color: #333;
     color: #fff;
-    padding: 15px;
-    margin-bottom: 10px;
     border-radius: 4px;
     transition: background-color 0.2s;
 }
   
 .problem-link:hover {
     background-color: #777777;
+    transform: scale(1.05);
+    transition: transform 0.3s ease-in-out;
+}
+
+.float-right {
+    float: none;
+ }
+
+ .card {
+    color: #000000;
+    background: rgb(255, 255, 255);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+  
+.card-body {
+    padding: 20px;
+}
+  
+.card-header {
+    font-size: 32px;
+}
+  
+.card-text {
+    font-size: 16px;
+}
+
+.trans-bg {
+    background: transparent;
+    border: transparent;
 }
   

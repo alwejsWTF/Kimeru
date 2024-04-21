@@ -22,7 +22,7 @@ function Profile({loggedIn, addAlert}) {
   }, [loggedIn]);
 
   return (
-    <Container className="profile-container">
+    <Container className="font profile-container">
       <h1>Your Profile</h1>
       <p>View your past submissions and performance statistics here.</p>
       <Card className="profile-card">

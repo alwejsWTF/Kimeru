@@ -1,0 +1,9 @@
+.auth-container {
+  max-width: 500px !important;
+}
+
+.card-background {
+  border-radius: 10px;
+  background-color: rgb(255, 255, 255);
+  margin-bottom: 40px;
+}

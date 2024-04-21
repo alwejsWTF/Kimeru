@@ -1,29 +1,131 @@
 .home-container {
+    max-width: 100%;
+}
+  
+.bannerRow {
+    color: rgb(255, 255, 255);
+    min-height: 90vh;
+    align-items: center;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 80px;
+  }
+  
+  .bannerTextCol {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    z-index: 2;
+  }
+  
+  .bannerTitle {
+    font-size: 4rem;
+    font-weight: bold;
     text-align: center;
-    padding: 50px 20px;
-}
-  
-.header {
+    color: black;
+    margin: 0;
+  }
+
+  .bannerSubtitle {
+    font-size: 1.5rem;
     margin-bottom: 30px;
-}
-
-.text {
-  margin-bottom: 30px;
-}
-
-.link {
-    background-color: #61dafb;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    color: white;
-    text-decoration: none;
-    display: inline-block;
-    transition: background-color 0.2s;
-    margin: 5px;
-}
+  }
   
-.link:hover {
-    background-color: #409ecf;
-}
+  .bannerButton {
+    background-image: linear-gradient(144deg,rgb(175, 64, 255), rgb(91, 66, 243) 50%,rgb(0, 221, 235));
+  }
+
+  .bannerButton:hover {
+    transform: scale(1.05);
+    transition: transform 0.3s ease-in-out;
+    animation-name: shine;
+    animation-duration: 260ms;
+  }
+
+  .container {
+    position: relative;
+    overflow: hidden;
+  }
   
+  .imageCard {
+    position: relative;
+    background-color: black;
+    width: 100%;
+    transition: transform 0.5s ease-in-out;
+  }
+  
+  .imageCard img {
+    object-fit: cover;
+    width: 100%;
+    height: auto;
+    transition: transform 0.5s ease;
+  }
+
+  .imageCard:hover img {
+    transform: scale(1.1);
+  }
+
+  @keyframes shine {
+    0% {
+        background-image: linear-gradient(144deg,
+        white, 
+        rgb(175, 64, 255) 10%, 
+        rgb(91, 66, 243) 50%,
+        rgb(0, 221, 235));
+    }
+
+    25% {
+        background-image: linear-gradient(144deg,
+        rgb(175, 64, 255), 
+        white 25%,
+        rgb(91, 66, 243) 50%,
+        rgb(0, 221, 235));
+
+    }
+
+    35% {
+        background-image: linear-gradient(144deg,
+        rgb(175, 64, 255), 
+        white 35%,
+        rgb(91, 66, 243) 50%,
+        rgb(0, 221, 235));
+
+    }
+
+    60% {
+        background-image: linear-gradient(144deg,
+        rgb(175, 64, 255), 
+        rgb(91, 66, 243) 50%,
+        white 60%,
+        rgb(0, 221, 235));
+
+    }
+
+    75% {
+        background-image: linear-gradient(144deg,
+        rgb(175, 64, 255), 
+        rgb(91, 66, 243) 50%,
+        white 75%,
+        rgb(0, 221, 235));
+
+    }
+
+    99% {
+        background-image: linear-gradient(144deg,
+        rgb(175, 64, 255), 
+        rgb(91, 66, 243) 50%,
+        white 99%,
+        rgb(0, 221, 235));
+    }
+
+    100% {
+        background-image: linear-gradient(144deg,
+        rgb(175, 64, 255), 
+        rgb(91, 66, 243) 50%,
+        rgb(0, 221, 235) 99%,
+        white);
+
+    }
+  }

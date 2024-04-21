@@ -22,7 +22,7 @@ export default function NavigationBar({addAlert, loggedIn, setLoggedIn}) {
 
   return (
     <>
-      <Navbar expand="md">
+      <Navbar expand="md" className="font">
         <Navbar.Brand href="/" className="ms-4">SPOJ</Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
@@ -30,7 +30,6 @@ export default function NavigationBar({addAlert, loggedIn, setLoggedIn}) {
             <Nav.Link to="/problems" as={NavLink}>Problems</Nav.Link>
             <Nav.Link to="/ranking" as={NavLink}>Ranking</Nav.Link>
             <Nav.Link to="/profile" as={NavLink} hidden={!loggedIn}>Profile</Nav.Link>
-            <Nav.Link to="/environment" as={NavLink}>Code Editor</Nav.Link>
             <Nav.Link className="ms-auto" hidden={loggedIn} to="/auth" as={NavLink}>Sign in</Nav.Link>
             <Nav.Link className="ms-auto" hidden={!loggedIn} onClick={logOut}>Logout</Nav.Link>
           </Nav>

@@ -5,11 +5,20 @@ import 'ace-builds/src-noconflict/mode-python';
 import 'ace-builds/src-noconflict/theme-monokai';
 import 'ace-builds/src-noconflict/ext-language_tools';
 
-function CodeEditor({ language }) {
+function CodeEditor({ language, value }) {
   const [editorHeight, setEditorHeight] = useState('');
+  const [content, setContent] = useState('');
+
+  useEffect(() => {
+    if (value) {
+      setContent(value);
+    } else {
+      setContent(getStartCode(language));
+    }
+  }, [language, value]);
 
   const handleCodeChange = (newValue) => {
-   
+    setContent(newValue);
   };
 
   const getStartCode = (lang) => {
@@ -25,7 +34,6 @@ function CodeEditor({ language }) {
       const headerHeight = document.querySelector('.header')?.offsetHeight || 0;
       const footerHeight = document.querySelector('.footer')?.offsetHeight || 0;
       const availableHeight = window.innerHeight - headerHeight - footerHeight;
-      
       setEditorHeight(`${availableHeight}px`);
     }
 
@@ -48,7 +56,7 @@ function CodeEditor({ language }) {
       showPrintMargin={true}
       showGutter={true}
       highlightActiveLine={true}
-      value={getStartCode(language)}
+      value={content}
       setOptions={{
         enableBasicAutocompletion: true,
         enableLiveAutocompletion: true,

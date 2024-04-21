@@ -16,7 +16,8 @@
 }
   
 .submitButton {
-    background-color: #5cb85c;
+    background-image: linear-gradient(144deg,rgb(175, 64, 255), rgb(91, 66, 243) 50%,rgb(0, 221, 235));
+    float: right;
     color: white;
     border: none;
     padding: 10px 20px;
@@ -26,6 +27,9 @@
 }
   
 .submitButton:hover {
-    background-color: #45a049;
+    transform: scale(1.05);
+    transition: transform 0.3s ease-in-out;
+    animation-name: shine;
+    animation-duration: 260ms;
 }
   

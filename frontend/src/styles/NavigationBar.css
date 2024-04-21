@@ -1,22 +1,19 @@
 .navbar {
-    background-color: #c97676;
-    border-bottom: 1px solid #444;
+    background: linear-gradient(to bottom, rgb(117, 0, 206), rgb(162, 97, 176) 70%, rgb(188, 148, 197));
 }
   
-.navbar-brand, .nav-link {
-    color: #fff;
+.navbar-brand{
+    font-size: 32px;
+    font-weight: bold;
+    color: #000000;
 }
   
 .nav-link:hover {
-    background-color: #af2c2c;
+    background-image: linear-gradient(to bottom, rgb(117, 0, 206), rgb(162, 97, 176) 60%, rgb(178, 132, 188) 90%, rgb(188, 148, 197));
 }
 
 .nav-link {
     padding: 10px 15px;
-    font-size: 16px;
+    font-size: 26px;
+    color: black;
   }
-  
-.navbar-toggle {
-    background-color: #777;
-}
-  
