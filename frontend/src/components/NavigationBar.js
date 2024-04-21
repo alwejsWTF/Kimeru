@@ -4,19 +4,21 @@ import { NavLink } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import * as routes from '../config/routes';
 import '../styles/NavigationBar.css'
+import { useToast } from './ToastProvider';
 
-export default function NavigationBar({addAlert, loggedIn, setLoggedIn}) {
+export default function NavigationBar({loggedIn, setLoggedIn}) {
 
   const navigate = useNavigate();
+  const showToast = useToast();
 
   const logOut = async () => {
     try {
       const response = await axios.post(routes.SIGN_OUT, {});
-      addAlert("Logout", response.data.message, "success");
+      showToast(response.data.message, "success");
       setLoggedIn(false);
       navigate("/");
     } catch(err) {
-      addAlert("Logout", err.response.data.message, "danger");
+      showToast(err.response.data.message, "danger");
     }
   }
 

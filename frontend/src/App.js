@@ -1,9 +1,8 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import { v4 as uuidv4 } from 'uuid';
-import { useState } from 'react';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import 'react-toastify/dist/ReactToastify.css';
+
 import HomePage from './components/HomePage';
-import AlertContainer from './components/AlertContainer';
 import AuthenticationLayout from './components/AuthenticationLayout';
 import NavigationBar from './components/NavigationBar';
 import ProblemsPage from './components/ProblemsPage';
@@ -11,25 +10,15 @@ import RankingPage from './components/RankingPage';
 import ProfilePage from './components/ProfilePage';
 import Footer from './components/Footer';
 import SubmitPage from './components/SubmitPage';
+import { ToastProvider } from './components/ToastProvider';
 
 import './styles/App.css';
+
 
 
 function App() {
 
   let [loggedIn, setLoggedIn] = useState(false);
-  let [alerts, setAlerts] = useState([]);
-
-
-  const addAlert = (title, message, type) => {
-    let alert = {
-      "id": uuidv4(),
-      "title": title,
-      "message": message,
-      "type": type
-    }
-    setAlerts([...alerts, alert]);
-  }
 
   useEffect(() => {
     const link = document.createElement('link');
@@ -46,18 +35,19 @@ function App() {
   return (
     <div className="app">
       <BrowserRouter>
-        <NavigationBar addAlert={addAlert} loggedIn={loggedIn} setLoggedIn={setLoggedIn} />
-        <AlertContainer alerts={alerts} setAlerts={setAlerts} />
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="auth" element={<AuthenticationLayout setLoggedIn={setLoggedIn} addAlert={addAlert}/>} />
-          <Route path="test" element={<h1>Hello World!</h1>} />
-          <Route path="problems" element={<ProblemsPage />} />
-          <Route path="problems/:id/submit" element={<SubmitPage addAlert={addAlert}/>} />
-          <Route path="ranking" element={<RankingPage />} />
-          <Route path="profile" element={<ProfilePage loggedIn={loggedIn} addAlert={addAlert}/>} />
-        </Routes>
-        <Footer/>
+          <ToastProvider>
+            <NavigationBar loggedIn={loggedIn} setLoggedIn={setLoggedIn} />
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="auth" element={<AuthenticationLayout setLoggedIn={setLoggedIn} />} />
+              <Route path="test" element={<h1>Hello World!</h1>} />
+              <Route path="problems" element={<ProblemsPage />} />
+              <Route path="problems/:id/submit" element={<SubmitPage />} />
+              <Route path="ranking" element={<RankingPage />} />
+              <Route path="profile" element={<ProfilePage loggedIn={loggedIn}/>} />
+            </Routes>
+            <Footer/>
+          </ToastProvider>
       </BrowserRouter>
     </div>
   );

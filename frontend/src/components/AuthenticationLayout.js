@@ -8,7 +8,9 @@ import '../styles/AuthenticationLayout.css';
 import getCookie from '../utils/functions';
 import * as routes from '../config/routes';
 
-export default function AuthenticationLayout({setLoggedIn, addAlert}) {
+import { useToast } from './ToastProvider';
+
+export default function AuthenticationLayout({setLoggedIn}) {
 
   let [nickname, setNickname] = useState("");
   let [password, setPassword] = useState("");
@@ -18,6 +20,7 @@ export default function AuthenticationLayout({setLoggedIn, addAlert}) {
   let [authModeLink, setAuthModeLink] = useState("Sign up");
 
   const navigate = useNavigate();
+  const showToast = useToast();
 
   const changeAuthMode = () => {
     setFormTitle(authMode === "login" ? "Sign up" : "Sign in");
@@ -38,12 +41,12 @@ export default function AuthenticationLayout({setLoggedIn, addAlert}) {
       //change axios settings for POST so it always includes X-CSRF-TOKEN and JWT cookie
       axios.defaults.headers.post["X-CSRF-TOKEN"] = getCookie("csrf_access_token");
       axios.defaults.withCredentials = true;
-      addAlert("Login", response.data.message, "success");
+      showToast("Login", response.data.message, "success");
       setLoggedIn(true);
       navigate("/");
     } catch(err) {
       console.log(err);
-      addAlert("Login", err.response.data.message, "danger")
+      showToast("Login", err.response.data.message, "danger")
     }
   }
 
@@ -54,10 +57,10 @@ export default function AuthenticationLayout({setLoggedIn, addAlert}) {
     }
     try {
       const response = await axios.post(routes.SIGN_UP, credentials);
-      addAlert("Login", response.data.message, "success");
+      showToast("Login", response.data.message, "success");
       loginUser();
     } catch(err) {
-      addAlert("Register", err.response.data.message, "danger");
+      showToast("Register", err.response.data.message, "danger");
     }
   }
 

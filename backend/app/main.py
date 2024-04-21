@@ -5,9 +5,7 @@ import flask_jwt_extended as fje
 from sqlalchemy import create_engine, select, exists
 from sqlalchemy.orm import sessionmaker
 from werkzeug.security import check_password_hash
-from werkzeug.utils import secure_filename
 
-import os
 import random
 import logging
 import threading
@@ -30,7 +28,6 @@ Session = sessionmaker(engine)
 jwt = fje.JWTManager(app)
 auth = Authentication(Session)
 
-ALLOWED_EXTENSIONS = {'py', 'c'}
 SUPPORTED_LANGUAGES = {'c', 'python'}
 
 BUSY_PORTS = set()

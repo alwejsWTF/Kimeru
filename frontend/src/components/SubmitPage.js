@@ -1,14 +1,17 @@
 import axios from 'axios';
 import { useState, Suspense } from 'react';
-import { Container, Row, Col, Form, Button } from 'react-bootstrap';
+import { Container, Row, Col, Form, Button, Spinner } from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
 
+import { useToast } from './ToastProvider';
 import CodeEditor from './CodeEditor';
 import '../styles/SubmitPage.css';
 
-function SubmitPage({ addAlert }) {
+function SubmitPage() {
+  const showToast = useToast();
   const [language, setLanguage] = useState('c_cpp');
   const [editorContent, setEditorContent] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const { id } = useParams();
 
   const handleCodeChange = (newCode) => {
@@ -29,7 +32,7 @@ function SubmitPage({ addAlert }) {
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (!editorContent) {
-      addAlert("Upload solution", "Please upload file or edit code.", "info");
+      showToast("Please upload file or edit code.", "info");
       return;
     }
 
@@ -38,17 +41,36 @@ function SubmitPage({ addAlert }) {
       lang: language === 'c_cpp' ? 'c' : language
     };
 
+    setIsLoading(true); 
     try {
       const response = await axios.post(`http://127.0.0.1:5000/problems/${id}/submit`, payload, {
         headers: {
           'Content-Type': 'application/json'
         }
       });
-      addAlert("Upload solution", response.data.message, "success");
+      const passedTests = response.data.test_results.filter(result => result).length;
+      const totalTests = response.data.test_results.length;
+      const passedPercentage = (passedTests / totalTests) * 100;
+
+      let alertType = "success";
+      let message = `Great job! All ${passedTests} out of ${totalTests} tests passed.`;
+
+      if (passedPercentage < 100) {
+        if (passedPercentage >= 50) {
+          alertType = "warning";
+          message = `Almost there! ${passedTests} out of ${totalTests} tests passed.`;
+        } else {
+          alertType = "danger";
+          message = `Keep trying! ${passedTests} out of ${totalTests} tests passed.`;
+        }
+      }
+
+      showToast('(☞ﾟヮﾟ)☞ ' + message, alertType);
     } catch (error) {
       console.log(error);
-      addAlert("Upload solution", error.response?.data?.message || "Failed to upload code", "danger");
+      showToast(error.response?.data?.message || "Failed to upload code", "danger");
     }
+    setIsLoading(false);
   };
 
   return (
@@ -84,8 +106,13 @@ function SubmitPage({ addAlert }) {
             <Suspense fallback={<div>Loading...</div>}>
               <CodeEditor className="aceEditor" language={language} value={editorContent} onChange={handleCodeChange} />
             </Suspense>
-            <Button variant="primary" type="submit" className="font mt-3 submitButton">
-              Submit Solution
+            <Button variant="primary" type="submit" className="font mt-3 submitButton" disabled={isLoading}>
+              {isLoading ? (
+                <>
+                  <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
+                  <span className="ms-3 sr-only">Submitting...</span>
+                </>
+              ) : "Submit Code"}  
             </Button>
           </Col>
         </Row>

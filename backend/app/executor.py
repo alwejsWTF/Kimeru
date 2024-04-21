@@ -32,7 +32,6 @@ def process_submission(lang, code, tests, port):
         docker_client.containers.run(IMAGE_NAME,
                                      detach=True,
                                      ports={port: port},
-                                     #network_mode='host',
                                      name=container_name,
                                      command=command)
 

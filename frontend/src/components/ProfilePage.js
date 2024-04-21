@@ -3,9 +3,11 @@ import { useState, useEffect } from 'react';
 import { Container, Card } from 'react-bootstrap';
 import * as routes from '../config/routes';
 import '../styles/ProfilePage.css';
+import { useToast } from './ToastProvider';
 
 
-function Profile({loggedIn, addAlert}) {
+function Profile({loggedIn}) {
+  const showToast = useToast();
   const [userProfile, setUserProfile] = useState('');
 
   const getUserInfo = async () => {
@@ -13,7 +15,7 @@ function Profile({loggedIn, addAlert}) {
       const response = await axios.get(routes.GET_PROFILE_INFO);
       setUserProfile({ username: response.data.username, email: 'user1@example.com' });
     } catch(err) {
-      addAlert("Profile", err.response.data.message, "danger");
+      showToast(err.response.data.message, "danger");
     }
   }
 
