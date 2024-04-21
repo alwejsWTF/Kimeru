@@ -111,31 +111,9 @@ def get_profile():
             return response, 404
 
 
-@app.post("/problems/<problem_id>/upload")
-def upload_file(problem_id):
-    if 'sourceCode' not in request.files:
-        return jsonify(message='No file part'), 400
-
-    file = request.files['sourceCode']
-    if file.filename == '':
-        return jsonify(message='No selected file'), 400
-
-    if file and '.' in file.filename and file.filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS:
-        filename = secure_filename(file.filename)
-        # testing purpose
-        save_directory = os.path.join('./resources', problem_id)
-        if not os.path.exists(save_directory):
-            os.makedirs(save_directory)
-        file_path = os.path.join(save_directory, filename)
-        file.save(file_path)
-        return jsonify(message='File uploaded successfully', filename=filename), 200
-    else:
-        return jsonify(message='Invalid file extension'), 400
-
 @app.post("/problems/<problem_id>/submit")
 def submit(problem_id):
     req = request.get_json()
-
     if 'lang' not in req:
         return jsonify(message='No language specified'), 400
     if 'code' not in req:
@@ -181,7 +159,7 @@ def submit(problem_id):
 
     if port not in range(MIN_PORT, MAX_PORT + 1):
         return jsonify(message="What the hell?!"), 500
-
+    
     result = process_submission(req['lang'], req['code'], tests, port)
 
     try:
@@ -189,5 +167,4 @@ def submit(problem_id):
         BUSY_PORTS.remove(port)
     finally:
         PORTS_LOCK.release()
-
     return result

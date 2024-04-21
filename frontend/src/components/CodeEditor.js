@@ -5,20 +5,17 @@ import 'ace-builds/src-noconflict/mode-python';
 import 'ace-builds/src-noconflict/theme-monokai';
 import 'ace-builds/src-noconflict/ext-language_tools';
 
-function CodeEditor({ language, value }) {
+function CodeEditor({ language, value, onChange }) {
   const [editorHeight, setEditorHeight] = useState('');
   const [content, setContent] = useState('');
 
   useEffect(() => {
-    if (value) {
-      setContent(value);
-    } else {
-      setContent(getStartCode(language));
-    }
+    setContent(value || getStartCode(language));
   }, [language, value]);
 
   const handleCodeChange = (newValue) => {
     setContent(newValue);
+    onChange(newValue);
   };
 
   const getStartCode = (lang) => {

@@ -8,14 +8,16 @@ import '../styles/SubmitPage.css';
 
 function SubmitPage({ addAlert }) {
   const [language, setLanguage] = useState('c_cpp');
-  const [selectedFile, setSelectedFile] = useState('');
   const [editorContent, setEditorContent] = useState('');
   const { id } = useParams();
+
+  const handleCodeChange = (newCode) => {
+    setEditorContent(newCode);
+  };
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     if (file) {
-      setSelectedFile(file);
       const reader = new FileReader();
       reader.onload = function (e) {
         setEditorContent(e.target.result);
@@ -27,7 +29,7 @@ function SubmitPage({ addAlert }) {
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (!editorContent) {
-      addAlert("Upload solution", "Please select a file to upload.", "info");
+      addAlert("Upload solution", "Please upload file or edit code.", "info");
       return;
     }
 
@@ -80,7 +82,7 @@ function SubmitPage({ addAlert }) {
               </Col>
             </Row>
             <Suspense fallback={<div>Loading...</div>}>
-              <CodeEditor className="aceEditor" language={language} value={editorContent} onChange={setEditorContent} />
+              <CodeEditor className="aceEditor" language={language} value={editorContent} onChange={handleCodeChange} />
             </Suspense>
             <Button variant="primary" type="submit" className="font mt-3 submitButton">
               Submit Solution
