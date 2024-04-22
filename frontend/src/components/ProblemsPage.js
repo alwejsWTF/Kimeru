@@ -49,7 +49,7 @@ function ProblemsPage() {
               <Button variant="link" className="float-right">Toggle</Button>
             </ListGroup.Item>
             <Collapse in={openId === problem.id}>
-            <div >
+            <div>
               <ListGroup.Item className='trans-bg'>
                 <Card className="text-center">
                   <CardBody>

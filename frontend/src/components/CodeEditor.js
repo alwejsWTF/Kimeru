@@ -31,7 +31,7 @@ function CodeEditor({ language, value, onChange }) {
       const headerHeight = document.querySelector('.header')?.offsetHeight || 0;
       const footerHeight = document.querySelector('.footer')?.offsetHeight || 0;
       const availableHeight = window.innerHeight - headerHeight - footerHeight;
-      setEditorHeight(`${availableHeight}px`);
+      setEditorHeight(`${availableHeight - 150}px`);
     }
 
     updateEditorHeight();
@@ -46,7 +46,7 @@ function CodeEditor({ language, value, onChange }) {
       theme="monokai"
       width="100%"
       height={editorHeight}
-      style={{ borderRadius: '4px' }}
+      style={{ borderRadius: '4px', maxHeight: '800px' }}
       onChange={handleCodeChange}
       name="codeEditor"
       fontSize={16}
