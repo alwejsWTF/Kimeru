@@ -31,7 +31,7 @@ export default function NavigationBar({ loggedIn, setLoggedIn }) {
   return (
     <>
       <Navbar expand="md" className="font">
-        <Navbar.Brand href="/" className="ms-4">SPOJ</Navbar.Brand>
+        <Navbar.Brand to="/" as={NavLink} className="ms-4">SPOJ</Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="mx-3 container-fluid">

@@ -13,6 +13,8 @@ import SubmitPage from './components/SubmitPage';
 import { ToastProvider } from './components/ToastProvider';
 
 import './styles/App.css';
+import { getCookie } from './utils/functions';
+import { setAxiosCookieHeader } from './utils/functions';
 
 
 
@@ -25,10 +27,16 @@ function App() {
     link.href = 'https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap';
     link.rel = 'stylesheet';
     document.head.appendChild(link);
+    let cookie = getCookie("csrf_access_token");
+    if(document.cookie) {
+      setLoggedIn(true);
+      setAxiosCookieHeader(cookie);
+    }
     
     return () => {
       document.head.removeChild(link);
     };
+    
   }, []);
 
 

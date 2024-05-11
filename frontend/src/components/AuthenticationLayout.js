@@ -5,7 +5,8 @@ import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
 import '../styles/AuthenticationLayout.css';
-import getCookie from '../utils/functions';
+import { getCookie } from '../utils/functions';
+import { setAxiosCookieHeader } from '../utils/functions';
 import * as routes from '../config/routes';
 
 import { useToast } from './ToastProvider';
@@ -38,15 +39,14 @@ export default function AuthenticationLayout({setLoggedIn}) {
     try {
       const response = await axios.post(routes.SIGN_IN, credentials, {withCredentials: true});
 
-      //change axios settings for POST so it always includes X-CSRF-TOKEN and JWT cookie
-      axios.defaults.headers.post["X-CSRF-TOKEN"] = getCookie("csrf_access_token");
-      axios.defaults.withCredentials = true;
-      showToast("Login", response.data.message, "success");
+      let cookie = getCookie("csrf_access_token");
+      setAxiosCookieHeader(cookie);
+      showToast(response.data.message, "success");
       setLoggedIn(true);
       navigate("/");
     } catch(err) {
       console.log(err);
-      showToast("Login", err.response.data.message, "danger")
+      showToast(err.response.data.message, "danger")
     }
   }
 
@@ -57,10 +57,10 @@ export default function AuthenticationLayout({setLoggedIn}) {
     }
     try {
       const response = await axios.post(routes.SIGN_UP, credentials);
-      showToast("Login", response.data.message, "success");
+      showToast(response.data.message, "success");
       loginUser();
     } catch(err) {
-      showToast("Register", err.response.data.message, "danger");
+      showToast(err.response.data.message, "danger");
     }
   }
 
