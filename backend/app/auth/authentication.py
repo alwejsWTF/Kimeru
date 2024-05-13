@@ -20,10 +20,15 @@ class Authentication:
             session.add(user)
             session.commit()
 
-    def check_user_exists(self, nickname):
+    def check_username_exists(self, nickname):
         with self.Session() as session:
             return session.scalar(exists()
                                   .where(User.nick == nickname).select())
+
+    def check_user_exists(self, user_id):
+        with self.Session() as session:
+            return session.scalar(exists()
+                                  .where(User.id == user_id).select())
 
     def get_user(self, nickname):
         with self.Session() as session:
@@ -53,6 +58,12 @@ class Authentication:
             if target_timestamp > exp_timestamp:
                 jwt = fje.create_access_token(identity=fje.get_jwt_identity())
                 fje.set_access_cookies(response, jwt)
+                #response.set_cookie(value=jwt,
+                #                    secure=True,
+                #                    httponly=True,
+                #                    path="/",
+                #                    samesite="None",
+                #                    partitioned=True)
             return response
         except (RuntimeError, KeyError):
             return response

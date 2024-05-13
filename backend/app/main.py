@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from flask import Flask, request, jsonify
 import flask_jwt_extended as fje
@@ -14,6 +14,7 @@ from app.auth.authentication import Authentication
 from app.models.test import Test
 from app.models.task import Task
 from app.models.user import User
+from app.ranking.ranking import Ranking
 from app.executor import process_submission
 from config import Config
 
@@ -27,6 +28,7 @@ engine = create_engine(Config.CREDENTIALS)
 Session = sessionmaker(engine)
 jwt = fje.JWTManager(app)
 auth = Authentication(Session)
+ranking = Ranking(Session)
 
 SUPPORTED_LANGUAGES = {'c', 'python'}
 
@@ -55,7 +57,7 @@ def test_page():
 @app.post("/register")
 def register():
     user_credentials = request.json
-    if auth.check_user_exists(user_credentials["nickname"]):
+    if auth.check_username_exists(user_credentials["nickname"]):
         response = {"message": "User with given nick already exists"}
         return response, 400
     else:
@@ -75,11 +77,21 @@ def login():
     if check_password_hash(user.password, credentials["password"]):
         token = fje.create_access_token(identity=user.nick)
         response = jsonify({"message": "Successfully loged in"})
-        fje.set_access_cookies(response, token)
+        fje.set_access_cookies(response, token, max_age=timedelta(minutes=30))
+        headers = response.__dict__['headers'].getlist("Set-Cookie")
+        modified_headers = add_partitioned_header(headers)
+        response.__dict__["headers"].setlist("Set-Cookie", modified_headers)
         return response, 200
     else:
         response = {"message": "Incorrect password"}
         return response, 400
+
+
+def add_partitioned_header(cookies):
+    lst = []
+    for cookie in cookies:
+        lst.append(cookie + "; Partitioned")
+    return lst
 
 
 @app.post("/logout")
@@ -156,7 +168,7 @@ def submit(problem_id):
 
     if port not in range(MIN_PORT, MAX_PORT + 1):
         return jsonify(message="What the hell?!"), 500
-    
+
     result = process_submission(req['lang'], req['code'], tests, port)
 
     try:
@@ -165,3 +177,12 @@ def submit(problem_id):
     finally:
         PORTS_LOCK.release()
     return result
+
+
+@app.get("/started_tasks/<user_id>")
+def get_started_tasks(user_id):
+    if not auth.check_user_exists(user_id):
+        response = {"message": "User with given ID does not exist"}
+        return response, 404
+    tasks = ranking.get_user_tasks(user_id)
+    return tasks, 200
