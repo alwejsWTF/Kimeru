@@ -113,7 +113,9 @@ def get_profile():
         user_exists = session.scalar(exists()
                                      .where(User.nick == identity).select())
         if user_exists:
-            response = {"username": identity}
+            user = auth.get_user(identity)
+            response = {"username": user.nick,
+                        "id": user.id}
             return response, 200
         else:
             response = {"message": "User cannot be found"}

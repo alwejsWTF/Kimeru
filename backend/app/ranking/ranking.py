@@ -11,15 +11,14 @@ class Ranking:
 
     def get_user_tasks(self, user_id):
         with self.Session() as session:
-            tasks = {"task_ids": [],
-                     "descriptions": [],
-                     "solve_status": []}
+            tasks = []
             statement = (select(Task.id, Task.description, StartedTasks.solved)
                          .join_from(User, StartedTasks)
                          .join_from(StartedTasks, Task)
                          .where(User.id == user_id))
             for row in session.execute(statement):
-                tasks["task_ids"].append(row[0])
-                tasks["descriptions"].append(row[1])
-                tasks["solve_status"].append(row[2])
+                task = {"task_id": row[0],
+                        "description": row[1],
+                        "solve_status": row[2]}
+                tasks.append(task)
             return tasks
