@@ -9,7 +9,7 @@ class Base(DeclarativeBase):
 
 
 class StartedTasks(Base):
-    __tablename__ = "startedtasks"
+    __tablename__ = 'started_tasks'
     user: Mapped[int] = mapped_column(ForeignKey(User.id), primary_key=True)
     task: Mapped[int] = mapped_column(ForeignKey(Task.id), primary_key=True)
     solved: Mapped[bool] = mapped_column()

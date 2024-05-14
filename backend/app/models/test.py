@@ -8,7 +8,7 @@ class Base(DeclarativeBase):
 
 
 class Test(Base):
-    __tablename__ = "tests"
+    __tablename__ = 'tests'
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     task: Mapped[int] = mapped_column(ForeignKey(Task.id))
     input: Mapped[str] = mapped_column()

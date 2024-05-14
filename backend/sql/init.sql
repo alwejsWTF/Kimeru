@@ -1,38 +1,40 @@
-CREATE TABLE "User" (
+CREATE TABLE "user" (
 	id SERIAL PRIMARY KEY,
 	nick VARCHAR,
 	password VARCHAR
 );
 
-CREATE TABLE Task (
+CREATE TABLE "task" (
 	id SERIAL PRIMARY KEY,
-	description VARCHAR
+	name VARCHAR,
+	description VARCHAR,
+	points INT
 );
 
-CREATE TABLE StartedTasks (
-	"user" INT REFERENCES "User"(id),
-	task INT REFERENCES Task(id),
+CREATE TABLE "started_tasks" (
+	"user" INT REFERENCES "user"(id),
+	task INT REFERENCES "task"(id),
 	solved BOOLEAN	
 );
 
-CREATE TABLE Tag (
+CREATE TABLE "tag" (
 	id SERIAL PRIMARY KEY,
 	name VARCHAR
 );
 
-CREATE TABLE Task_Tag (
-	task INT REFERENCES Task(id),
-	tag INT REFERENCES Tag(id)
+CREATE TABLE "task_tag" (
+	task INT REFERENCES "task"(id),
+	tag INT REFERENCES "tag"(id)
 );
 
-CREATE TABLE Tests (
+CREATE TABLE "tests" (
 	id SERIAL PRIMARY KEY,
-	task INT REFERENCES Task(id),
+	task INT REFERENCES "task"(id),
 	input VARCHAR,
 	expected_output VARCHAR
 );
 
-CREATE TABLE TokenBlocklist (
+CREATE TABLE "token_blocklist" (
 	id SERIAL PRIMARY KEY,
 	jti UUID NOT NULL,
 	creation_time timestamp NOT NULL

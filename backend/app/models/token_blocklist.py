@@ -7,7 +7,7 @@ class Base(DeclarativeBase):
 
 
 class TokenBlocklist(Base):
-    __tablename__ = "tokenblocklist"
+    __tablename__ = 'token_blocklist'
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     jti: Mapped[str] = mapped_column(nullable=False)
     creation_time: Mapped[datetime.datetime] = mapped_column(nullable=False)

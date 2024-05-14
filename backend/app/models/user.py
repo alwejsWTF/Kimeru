@@ -7,7 +7,7 @@ class Base(DeclarativeBase):
 
 
 class User(Base, UserMixin):
-    __tablename__ = "User"
+    __tablename__ = 'user'
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     nick: Mapped[str] = mapped_column()
     password: Mapped[str] = mapped_column()

@@ -6,6 +6,6 @@ class Base(DeclarativeBase):
 
 
 class Tag(Base):
-    __tablename__ = "tag"
+    __tablename__ = 'tag'
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     name: Mapped[str] = mapped_column()

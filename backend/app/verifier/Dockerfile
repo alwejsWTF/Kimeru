@@ -6,7 +6,6 @@ RUN apt-get update \
     && apt-get install -y \
         gcc \
         python3 \
-        pip
-RUN pip install Flask
+        python3-flask
 
 COPY verifier.py /app/verifier.py
