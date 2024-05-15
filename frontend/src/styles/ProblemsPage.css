@@ -13,6 +13,10 @@
     border-radius: 4px;
     transition: background-color 0.2s;
 }
+
+.problem-link .ml-2 {
+    margin-left: 20px;
+}
   
 .problem-link:hover {
     background-color: #777777;

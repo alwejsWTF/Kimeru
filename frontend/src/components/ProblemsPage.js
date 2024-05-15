@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Collapse, ListGroup, Button, Tooltip, OverlayTrigger, Card, CardBody, CardFooter, Form, FormGroup, FormCheck, CardHeader, CardText } from 'react-bootstrap';
+import { Container, Row, Col, Collapse, ListGroup, Button, Tooltip, OverlayTrigger, Card, CardBody, CardFooter, Form } from 'react-bootstrap';
 import axios from 'axios';
 
+import ProblemDifficultyBar from './ProblemDifficultyBar';
 import * as routes from '../config/routes';
 import { useToast } from './ToastProvider';
 import '../styles/ProblemsPage.css'
@@ -11,12 +12,14 @@ import { FaChevronUp, FaChevronDown } from "react-icons/fa";
 function ProblemsPage() {
   const showToast = useToast();
   const [problems, setProblems] = useState([]);
+  const [allProblems, setAllProblems] = useState([]);
   const [tags, setTags] = useState([]);
   const [chosenTags, setChosenTags] = useState([]);
   const [openId, setOpenId] = useState('');
 
   useEffect(() => {
     axios.get(routes.GET_ALL_TASKS_TAGS).then(response => {
+      setAllProblems(response.data);
       setProblems(response.data);
     })
     .catch(error => {
@@ -38,11 +41,11 @@ function ProblemsPage() {
     }
   };
 
-  const handleTagChange = (tagId) => {
-    if (chosenTags.includes(tagId)) {
-      setChosenTags(chosenTags.filter(tag => tag !== tagId));
+  const handleTagChange = (tagName) => {
+    if (chosenTags.includes(tagName)) {
+      setChosenTags(chosenTags.filter(tag => tag !== tagName));
     } else {
-      setChosenTags([...chosenTags, tagId]);
+      setChosenTags([...chosenTags, tagName]);
     }
   };
 
@@ -52,6 +55,18 @@ function ProblemsPage() {
     </Tooltip>
   );
 
+  const applyFilters = () => {
+    if (chosenTags.length === 0) {
+      setProblems(allProblems);
+    } else {
+      const filteredProblems = allProblems.filter(problem => {
+        const problemTagsArray = problem.tags.split(',').map(tag => tag.trim());
+        return chosenTags.some(tagName => problemTagsArray.includes(tagName));
+      });
+      setProblems(filteredProblems);
+    }
+  };
+
   return (
     <Container className="font problems-container">
       <Row>
@@ -59,7 +74,7 @@ function ProblemsPage() {
           <Card className="card-tags">
             <CardBody className='card-tags-body'>
               <Card.Header className="card-tags-title text-center">Tags</Card.Header>
-              <Form className="card-tags-form">
+              <Form className='card-tags-form'>
                 <Form.Group controlId="tagsForm">
                   {tags.map(tag => (
                     <Form.Check
@@ -67,14 +82,14 @@ function ProblemsPage() {
                       id={tag.id}
                       type="checkbox"
                       label={tag.name}
-                      checked={chosenTags.includes(tag.id)}
-                      onChange={() => handleTagChange(tag.id)}
+                      checked={chosenTags.includes(tag.name)}
+                      onChange={() => handleTagChange(tag.name)}
                     />
                   ))}
                 </Form.Group>
               </Form>
               <Card.Footer className='card-tags-footer'>
-                <Button variant="success" className="bannerButton">
+                <Button variant="success" className="bannerButton" onClick={applyFilters}>
                   Apply Filters
                 </Button>
               </Card.Footer>
@@ -86,21 +101,27 @@ function ProblemsPage() {
           <ListGroup variant="flush">
             {problems.map(problem => (
               <React.Fragment key={problem.id}>
-                <ListGroup.Item action onClick={() => toggleOpen(problem.id)} className="problem-link">
-                  {problem.name}
-                  {openId === problem.id ? (
-                    <FaChevronUp className="float-right" />
-                  ) : (
-                    <FaChevronDown className="float-right" />
-                  )}
+                <ListGroup.Item 
+                  action onClick={() => toggleOpen(problem.id)} 
+                  className="problem-link d-flex align-items-center justify-content-between"
+                >
+                  <span>{problem.name}</span>
+                  <div className="d-flex align-items-center">
+                    <ProblemDifficultyBar points={problem.points}/>
+                    {openId === problem.id ? (
+                      <FaChevronUp className="ml-2" />
+                    ) : (
+                      <FaChevronDown className="ml-2" />
+                    )}
+                  </div>
                 </ListGroup.Item>
                 <Collapse in={openId === problem.id}>
                   <ListGroup.Item className='trans-bg'>
                     <Card className="text-center">
                       <CardBody>
                         <Card.Header>{problem.name}</Card.Header>
-                        <Card.Subtitle className="my-2">Points: {problem.points} , Tags: {problem.tags}</Card.Subtitle>
-                        <Card.Text className="my-4">{problem.description}</Card.Text>
+                        <Card.Subtitle className="my-2"><strong>Tags:</strong> {problem.tags}</Card.Subtitle>
+                        <Card.Text className="my-4"><strong>Description:</strong> {problem.description}</Card.Text>
                       </CardBody>
                       <CardFooter>
                         <OverlayTrigger
