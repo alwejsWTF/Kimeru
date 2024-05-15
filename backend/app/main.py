@@ -14,6 +14,7 @@ from app.auth.authentication import Authentication
 from app.models.test import Test
 from app.models.task import Task
 from app.models.user import User
+from app.models.tag import Tag
 from app.ranking.ranking import Ranking
 from app.executor import process_submission
 from config import Config
@@ -188,3 +189,33 @@ def get_started_tasks(user_id):
         return response, 404
     tasks = ranking.get_user_tasks(user_id)
     return tasks, 200
+
+
+@app.get("/tasks")
+def get_all_tasks():
+    with Session() as session:
+        all_tasks = session.query(Task).all()
+        task_list = [
+            {
+                'id': task.id,
+                'name': task.name,
+                'description': task.description,
+                'points': task.points
+            }
+            for task in all_tasks
+        ]
+        return jsonify(task_list), 200
+
+
+@app.get("/tags")
+def get_all_tags():
+    with Session() as session:
+        all_tags = session.query(Tag).all()
+        tag_list = [
+            {
+                'id': tag.id,
+                'name': tag.name
+            }
+            for tag in all_tags
+        ]
+        return jsonify(tag_list), 200

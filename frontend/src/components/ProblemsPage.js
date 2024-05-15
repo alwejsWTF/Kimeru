@@ -1,28 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import { Container, ListGroup, Collapse, Button, Tooltip, OverlayTrigger, Card, CardBody, CardFooter } from 'react-bootstrap';
+import axios from 'axios';
 
+import * as routes from '../config/routes';
+import { useToast } from './ToastProvider';
 import '../styles/ProblemsPage.css'
 
+import { FaChevronUp, FaChevronDown } from "react-icons/fa";
+
 function ProblemsPage() {
+  const showToast = useToast();
   const [problems, setProblems] = useState([]);
   const [openId, setOpenId] = useState('');
-  const problemDescription = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis commodo risus ac dapibus venenatis. Aliquam vulputate mollis nulla ut egestas. Aliquam erat volutpat. Etiam maximus enim elit, sit amet bibendum magna facilisis ut. In tristique odio mi, eget elementum magna fringilla sed. Nunc id massa gravida, consectetur felis id, rhoncus leo. Phasellus placerat, magna et sollicitudin imperdiet, eros nunc dignissim est, dictum tempor odio nibh sit amet quam. Integer luctus risus sapien, luctus dapibus orci convallis ut. Morbi in dignissim turpis. Suspendisse ante nisi, pulvinar ut dolor ac, efficitur lobortis massa. Vivamus ipsum lacus, malesuada at tristique ac, dignissim ac ante. Sed luctus, orci pharetra cursus pharetra, nibh diam euismod dui, non dignissim mauris justo in elit. Etiam arcu turpis, tristique vitae odio a, volutpat vulputate risus. Sed ut ullamcorper augue, sed pretium turpis.';
 
   useEffect(() => {
-    
-    setProblems([
-      { id: 1, title: 'Example Problem 1', description: problemDescription, tag: 'tag1' },
-      { id: 2, title: 'Example Problem 2', description: problemDescription, tag: 'tag2' },
-      { id: 3, title: 'Example Problem 3', description: problemDescription, tag: 'tag3' },
-      { id: 4, title: 'Example Problem 4', description: problemDescription, tag: 'tag4' },
-      { id: 5, title: 'Example Problem 5', description: problemDescription, tag: 'tag5' },
-      { id: 6, title: 'Example Problem 6', description: problemDescription, tag: 'tag6' },
-      { id: 7, title: 'Example Problem 7', description: problemDescription, tag: 'tag7' },
-      { id: 8, title: 'Example Problem 8', description: problemDescription, tag: 'tag8' },
-      { id: 9, title: 'Example Problem 9', description: problemDescription, tag: 'tag9' },
-      { id: 10, title: 'Example Problem 10', description: problemDescription, tag: 'tag10' }
-    ]);
-  }, []);
+    axios.get(routes.GET_ALL_TASKS).then(response => {
+      setProblems(response.data);
+    })
+    .catch(error => {
+      showToast(`Error fetching problems: ${error}`, "danger");
+    })
+  }, [showToast]);
 
   const toggleOpen = (id) => {
     if (openId === id) {
@@ -45,16 +43,19 @@ function ProblemsPage() {
         {problems.map(problem => (
           <React.Fragment key={problem.id}>
             <ListGroup.Item action onClick={() => toggleOpen(problem.id)} className="problem-link">
-              {problem.title}
-              <Button variant="link" className="float-right">Toggle</Button>
+              {problem.name}
+              {openId === problem.id ? (
+                <FaChevronUp className="float-right" />
+              ) : (
+                <FaChevronDown className="float-right" />
+              )}
             </ListGroup.Item>
             <Collapse in={openId === problem.id}>
-            <div>
               <ListGroup.Item className='trans-bg'>
                 <Card className="text-center">
                   <CardBody>
-                    <Card.Header>{problem.title}</Card.Header>
-                    <Card.Subtitle className="my-2">Tag: {problem.tag}</Card.Subtitle>
+                    <Card.Header>{problem.name}</Card.Header>
+                    <Card.Subtitle className="my-2">Points: {problem.points} , Tags: {problem.tag}</Card.Subtitle>
                     <Card.Text className="my-4">{problem.description}</Card.Text>
                   </CardBody>
                   <CardFooter>
@@ -70,9 +71,8 @@ function ProblemsPage() {
                   </CardFooter>
                 </Card>
               </ListGroup.Item>
-            </div>
-          </Collapse>
-        </React.Fragment>
+            </Collapse>
+          </React.Fragment>
         ))}
       </ListGroup>
     </Container>

@@ -20,12 +20,14 @@ function Profile({loggedIn}) {
   const [startedTasks, setStartedTasks] = useState([]);
 
   useEffect(() => {
-    axios.get(routes.GET_PROFILE_INFO).then((res) => {
-      setUserProfile({ id: res.data.id, username: res.data.username, email: 'user1@example.com' });
-    }).catch((err) => {
-      showToast(err.response.data.message, "danger");
-    })
-  }, [loggedIn]);
+    if (loggedIn) {
+      axios.get(routes.GET_PROFILE_INFO).then((res) => {
+        setUserProfile({ id: res.data.id, username: res.data.username, email: 'user1@example.com' });
+      }).catch((err) => {
+        showToast(err.response.data.message, "danger");
+      })
+    }
+  }, [loggedIn, showToast]);
 
   useEffect(() => {
     if (userProfile) {
@@ -35,7 +37,7 @@ function Profile({loggedIn}) {
         showToast(err.response.data.message, "danger");
       })
     }
-  }, [userProfile]);
+  }, [userProfile, showToast]);
 
 
   return (
