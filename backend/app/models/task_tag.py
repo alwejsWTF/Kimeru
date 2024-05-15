@@ -1,15 +1,10 @@
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
-from sqlalchemy import ForeignKey
-
-from app.models.tag import Tag
-from app.models.task import Task
+from sqlalchemy import ForeignKey, Table, Column, Integer
+from .base import Base
 
 
-class Base(DeclarativeBase):
-    pass
-
-
-class TaskTag(Base):
-    __tablename__ = 'task_tag'
-    task: Mapped[int] = mapped_column(ForeignKey(Task.id), primary_key=True)
-    tag: Mapped[int] = mapped_column(ForeignKey(Tag.id), primary_key=True)
+task_tag = Table(
+    'task_tag',
+    Base.metadata,
+    Column('task', Integer, ForeignKey('task.id'), primary_key=True),
+    Column('tag', Integer, ForeignKey('tag.id'), primary_key=True)
+)

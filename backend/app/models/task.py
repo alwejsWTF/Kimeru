@@ -1,8 +1,6 @@
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
-
-
-class Base(DeclarativeBase):
-    pass
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+from app.models.task_tag import task_tag
+from .base import Base
 
 
 class Task(Base):
@@ -11,3 +9,5 @@ class Task(Base):
     name: Mapped[str] = mapped_column()
     description: Mapped[str] = mapped_column()
     points: Mapped[int] = mapped_column()
+    
+    tags = relationship("Tag", secondary=task_tag, back_populates="tasks")

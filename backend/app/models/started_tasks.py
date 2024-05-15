@@ -1,11 +1,8 @@
 from sqlalchemy import ForeignKey
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column
 from app.models.task import Task
 from app.models.user import User
-
-
-class Base(DeclarativeBase):
-    pass
+from .base import Base
 
 
 class StartedTasks(Base):

@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 
 from flask import Flask, request, jsonify
 import flask_jwt_extended as fje
-from sqlalchemy import create_engine, select, exists
+from sqlalchemy import create_engine, select, exists, func
 from sqlalchemy.orm import sessionmaker
 from werkzeug.security import check_password_hash
 
@@ -191,22 +191,6 @@ def get_started_tasks(user_id):
     return tasks, 200
 
 
-@app.get("/tasks")
-def get_all_tasks():
-    with Session() as session:
-        all_tasks = session.query(Task).all()
-        task_list = [
-            {
-                'id': task.id,
-                'name': task.name,
-                'description': task.description,
-                'points': task.points
-            }
-            for task in all_tasks
-        ]
-        return jsonify(task_list), 200
-
-
 @app.get("/tags")
 def get_all_tags():
     with Session() as session:
@@ -219,3 +203,29 @@ def get_all_tags():
             for tag in all_tags
         ]
         return jsonify(tag_list), 200
+
+
+@app.get('/tasks/tags')
+def get_all_tasks_tags():
+    with Session() as session:
+        query_result = session.query(
+            Task.id,
+            Task.name,
+            Task.description,
+            Task.points,
+            func.string_agg(Tag.name, ', ').label('tags')
+        ).join(
+            Task.tags
+        ).group_by(
+            Task.id
+        ).all()
+        
+        tasks_with_tags = [{
+            'id': task.id,
+            'name': task.name,
+            'description': task.description,
+            'points': task.points,
+            'tags': task.tags
+        } for task in query_result]
+        return jsonify(tasks_with_tags), 200
+

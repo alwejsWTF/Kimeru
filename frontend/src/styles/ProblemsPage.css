@@ -42,6 +42,31 @@
     font-size: 16px;
 }
 
+.card-tags {
+    margin-top: 64px;
+    background: rgba(0, 0, 0, 0.058);
+}
+
+.card-tags-form {
+    padding: 1.25rem;
+    background-color: #ededed;
+    border-radius: 0.25rem;
+}
+
+.card-tags-title {
+    padding: 0.25rem;
+    background-color: #333;
+    color: white;
+    font-size: 32px;
+    border-radius: 0.25rem;
+}
+
+.card-tags-footer {
+    margin-top: -4px;
+    background-color: #ededed;
+    text-align: center;
+}
+
 .trans-bg {
     background: transparent;
     border: transparent;
