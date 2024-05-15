@@ -6,7 +6,8 @@ import ProblemDifficultyBar from './ProblemDifficultyBar';
 import * as routes from '../config/routes';
 import { useToast } from './ToastProvider';
 import '../styles/ProblemsPage.css'
-
+import { PiSortAscendingBold, PiSortDescendingBold } from "react-icons/pi";
+import { TbSortAscendingLetters,TbSortDescendingLetters  } from "react-icons/tb";
 import { FaChevronUp, FaChevronDown } from "react-icons/fa";
 
 function ProblemsPage() {
@@ -16,6 +17,8 @@ function ProblemsPage() {
   const [tags, setTags] = useState([]);
   const [chosenTags, setChosenTags] = useState([]);
   const [openId, setOpenId] = useState('');
+  const [sortPt, setSortPt] = useState('');
+  const [sortName, setSortName] = useState('');
 
   useEffect(() => {
     axios.get(routes.GET_ALL_TASKS_TAGS).then(response => {
@@ -61,10 +64,35 @@ function ProblemsPage() {
     } else {
       const filteredProblems = allProblems.filter(problem => {
         const problemTagsArray = problem.tags.split(',').map(tag => tag.trim());
-        return chosenTags.some(tagName => problemTagsArray.includes(tagName));
+        return chosenTags.every(tagName => problemTagsArray.includes(tagName));
       });
       setProblems(filteredProblems);
     }
+  };
+
+  const clearFilters = () => {
+    setChosenTags([]);
+    setProblems(allProblems);
+  };
+
+  const toggleSortPt = () => {
+    const order = sortPt === 'asc' ? 'desc' : 'asc';
+    const sortedProblems = [...problems].sort((a, b) => {
+      return order === 'asc' ? a.points - b.points : b.points - a.points;
+    });
+    setSortPt(order);
+    setSortName('asc');
+    setProblems(sortedProblems);
+  };
+
+  const toggleSortName = () => {
+    const order = sortName === 'asc' ? 'desc' : 'asc';
+    const sortedProblems = [...problems].sort((a, b) => {
+      return order === 'asc' ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name);
+    });
+    setSortPt('desc');
+    setSortName(order);
+    setProblems(sortedProblems);
   };
 
   return (
@@ -89,7 +117,10 @@ function ProblemsPage() {
                 </Form.Group>
               </Form>
               <Card.Footer className='card-tags-footer'>
-                <Button variant="success" className="bannerButton" onClick={applyFilters}>
+                <Button variant="success" className="bannerButton" style={{ margin: '5px' }} onClick={clearFilters}>
+                  Clear Filters
+                </Button>
+                <Button variant="success" className="bannerButton" style={{ margin: '5px' }} onClick={applyFilters}>
                   Apply Filters
                 </Button>
               </Card.Footer>
@@ -98,6 +129,16 @@ function ProblemsPage() {
         </Col>
         <Col md={8}>
           <h1 className="mb-3">Problems</h1>
+          <ListGroup.Item className="problems-header d-flex justify-content-between align-items-center">
+            <span style={{ marginLeft: '10px' }} onClick={toggleSortName}>
+              Name
+              {sortName === 'asc' ? <TbSortAscendingLetters/> : <TbSortDescendingLetters/>}
+            </span>
+            <span style={{ marginRight: '90px' }} onClick={toggleSortPt}>
+              Points
+              {sortPt === 'desc' ? <PiSortAscendingBold/> : <PiSortDescendingBold/>}
+            </span>
+          </ListGroup.Item>
           <ListGroup variant="flush">
             {problems.map(problem => (
               <React.Fragment key={problem.id}>
@@ -129,9 +170,9 @@ function ProblemsPage() {
                           delay={{ show: 250, hide: 400 }}
                           overlay={renderTooltip}
                         >
-                          <Button variant="success" className='bannerButton' href={`/problems/${problem.id}/submit`}>
-                            Submit Solution
-                          </Button>
+                        <Button variant="success" className='bannerButton' href={`/problems/${problem.id}/submit`}>
+                          Submit Solution
+                        </Button>
                         </OverlayTrigger>
                       </CardFooter>
                     </Card>
@@ -147,3 +188,4 @@ function ProblemsPage() {
 }
 
 export default ProblemsPage;
+
