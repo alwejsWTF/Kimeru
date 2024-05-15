@@ -219,7 +219,7 @@ def get_all_tasks_tags():
         ).group_by(
             Task.id
         ).all()
-        
+
         tasks_with_tags = [{
             'id': task.id,
             'name': task.name,
@@ -229,3 +229,7 @@ def get_all_tasks_tags():
         } for task in query_result]
         return jsonify(tasks_with_tags), 200
 
+
+@app.get("/ranking")
+def get_ranking():
+    return ranking.get_ranking(), 200

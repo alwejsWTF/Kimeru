@@ -9,5 +9,5 @@ class Task(Base):
     name: Mapped[str] = mapped_column()
     description: Mapped[str] = mapped_column()
     points: Mapped[int] = mapped_column()
-    
+
     tags = relationship("Tag", secondary=task_tag, back_populates="tasks")
