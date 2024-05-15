@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react';
 import { Container, Table } from 'react-bootstrap';
 import '../styles/RankingPage.css';
+import * as routes from '../config/routes';
+import axios from 'axios';
+import { useToast } from './ToastProvider';
 
 function sortByPoints(rankings) {
   rankings.sort((a, b) => b.points - a.points);
@@ -10,22 +13,15 @@ function sortByPoints(rankings) {
 function Ranking() {
   const [rankings, setRankings] = useState([]);
   const sortedRankings = sortByPoints(rankings);
+  const showToast = useToast();
 
   useEffect(() => {
-    setRankings([
-      { username: 'User1', points: 100 },
-      { username: 'User2', points: 1200 }, 
-      { username: 'User3', points: 1100 },
-      { username: 'User4', points: 1100 },
-      { username: 'User5', points: 10 },
-      { username: 'User6', points: 24 },
-      { username: 'User7', points: 12 },
-      { username: 'User8', points: 1865 },
-      { username: 'User9', points: 101 },
-      { username: 'User10', points: 88 }
-    ]);
-
-  }, []);
+    axios.get(routes.GET_RANKING).then((res) => {
+      setRankings(res.data);
+    }).catch((err) => {
+      showToast(err, "danger");
+    })
+  }, [showToast]);
 
   return (
     <Container className="ranking-container">

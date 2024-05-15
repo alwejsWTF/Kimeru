@@ -30,6 +30,7 @@ class Ranking:
             statement = (select(User.nick, func.sum(Task.points))
                          .join_from(User, StartedTasks)
                          .join_from(StartedTasks, Task)
+                         .where(StartedTasks.solved)
                          .group_by(User.id))
             for row in session.execute(statement):
                 user = {"username": row[0],
