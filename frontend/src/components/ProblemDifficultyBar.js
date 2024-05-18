@@ -1,4 +1,4 @@
-const ProblemDifficultyBar = ({ points }) => {
+const ProblemDifficultyBar = ({ points, width, height }) => {
     const totalSquares = 10;
 
     const getColor = (index) => {
@@ -13,8 +13,8 @@ const ProblemDifficultyBar = ({ points }) => {
         <div className="d-flex align-items-center">
             {Array.from({ length: totalSquares }, (_, i) => (
                 <div key={i} style={{
-                    width: '14px',
-                    height: '14px',
+                    width: `${width}px`,
+                    height: `${height}px`,
                     backgroundColor: getColor(i + 1),
                     border: '1px solid #333',
                 }} />

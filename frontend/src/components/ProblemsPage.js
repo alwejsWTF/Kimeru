@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Collapse, ListGroup, Button, Tooltip, OverlayTrigger, Card, CardBody, CardFooter, Form } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
+import { Container, Row, Col, Collapse, ListGroup, 
+         Button, Tooltip, OverlayTrigger, Card, 
+         CardBody, CardFooter, Form } 
+         from 'react-bootstrap';
 import axios from 'axios';
 
 import ProblemDifficultyBar from './ProblemDifficultyBar';
@@ -11,6 +15,7 @@ import { TbSortAscendingLetters,TbSortDescendingLetters  } from "react-icons/tb"
 import { FaChevronUp, FaChevronDown } from "react-icons/fa";
 
 function ProblemsPage() {
+  const navigate = useNavigate();
   const showToast = useToast();
   const [problems, setProblems] = useState([]);
   const [allProblems, setAllProblems] = useState([]);
@@ -50,6 +55,10 @@ function ProblemsPage() {
     } else {
       setChosenTags([...chosenTags, tagName]);
     }
+  };
+
+  const handleRedirect = (problem) => {
+    navigate(`/problems/${problem.id}/submit`, { state: { problem } });
   };
 
   const renderTooltip = (props) => (
@@ -148,7 +157,7 @@ function ProblemsPage() {
                 >
                   <span>{problem.name}</span>
                   <div className="d-flex align-items-center">
-                    <ProblemDifficultyBar points={problem.points}/>
+                    <ProblemDifficultyBar points={problem.points} width={14} height={14}/>
                     {openId === problem.id ? (
                       <FaChevronUp className="ml-2" />
                     ) : (
@@ -170,7 +179,7 @@ function ProblemsPage() {
                           delay={{ show: 250, hide: 400 }}
                           overlay={renderTooltip}
                         >
-                        <Button variant="success" className='bannerButton' href={`/problems/${problem.id}/submit`}>
+                        <Button variant="success" className='bannerButton' onClick={() => handleRedirect(problem)}>
                           Submit Solution
                         </Button>
                         </OverlayTrigger>

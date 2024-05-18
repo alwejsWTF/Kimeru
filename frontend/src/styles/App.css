@@ -2,6 +2,11 @@ h1, h2, h3, h4, h5, h6, p, .font {
     font-family: 'Orbitron', sans-serif;
 }
 
+h1 {
+    font-weight: bold;
+    color: #343a40;
+}
+
 .app {
     background: linear-gradient(to bottom right, rgb(125, 253, 255), rgb(0, 89, 96));
 }

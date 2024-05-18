@@ -1,22 +1,65 @@
 .ranking-container {
     padding: 20px;
+    margin-top: 20px;
+    background-color: rgba(0, 0, 0, 0.258);
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    max-width: 1200px;
+    padding-left: 75px;
+    padding-right: 75px;
 }
-  
+
 .ranking-table {
-    width: 100%;
-    background-color: #333;
-    color: #fff;
+    background-color: #333333;
+    color: white;
     border-collapse: collapse;
-    margin-bottom: 40px;
+    margin-top: 20px;
+    border-radius: 8px;
+    overflow: hidden;
 }
   
+.table thead th {
+    background-color: #220033;
+    color: white;
+}
+  
+.table tbody tr {
+    transition: background-color 0.2s;
+}
+
 .ranking-table th,
 .ranking-table td {
     padding: 15px;
-    border: 1px solid #444;
+    border: 1px solid #5e008dbb;
+}
+
+.pagination {
+    margin-top: 20px;
+}
+
+.pagination .page-item .page-link {
+    background-color: #220033;
+}
+
+.pagination .page-item.disabled .page-link {
+    background-color: #421e56;
+    pointer-events: none;
+    cursor: not-allowed;
 }
   
-.ranking-table th {
-    background-color: #222;
+.pagination .page-item.active .page-link {
+    background-color: #5f2090;
+    border-color: #fab5ff;
+    color: #fab5ff;
+}
+  
+.pagination .page-link {
+    color: #fab5ff;
+}
+  
+.pagination .page-link:hover {
+    background-color: #a353e0;
+    border-color: #fab5ff;
+    color: #fab5ff;
 }
   

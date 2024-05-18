@@ -123,6 +123,14 @@ def get_profile():
             return response, 404
 
 
+@app.get("/profile/id")
+@fje.jwt_required()
+def get_id():
+    identity = fje.get_jwt_identity()
+    user = auth.get_user(identity)
+    return {"user_id": user.id}, 200
+
+
 @app.post("/problems/<problem_id>/submit")
 def submit(problem_id):
     req = request.get_json()
@@ -205,6 +213,21 @@ def get_all_tags():
         return jsonify(tag_list), 200
 
 
+@app.get('/task/<problem_id>')
+def get_task(problem_id):
+    with Session() as session:
+        task = session.query(Task).filter(Task.id == problem_id).one_or_none()
+        if not task:
+            return jsonify({"message": "Task not found"}), 404
+        task_json = {
+            'id': task.id,
+            'name': task.name,
+            'description': task.description,
+            'points': task.points
+        }
+        return jsonify(task_json), 200
+
+
 @app.get('/tasks/tags')
 def get_all_tasks_tags():
     with Session() as session:
@@ -233,3 +256,11 @@ def get_all_tasks_tags():
 @app.get("/ranking")
 def get_ranking():
     return ranking.get_ranking(), 200
+
+
+@app.post("/started_tasks/add")
+def add_started_task():
+    req = request.get_json()
+    ranking.add_started_tasks(req["user_id"], req["task_id"], req["status"])
+
+    return {"message": "Successfully added"}, 200

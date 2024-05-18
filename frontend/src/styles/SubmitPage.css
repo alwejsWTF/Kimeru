@@ -32,4 +32,17 @@
     animation-name: shine;
     animation-duration: 260ms;
 }
+
+.description {
+    background-color: #1e1e1e;
+    border: transparent;
+    color: white;
+    font-size: 20px;
+    text-align: justify;
+}
+
+.editorPoints {
+    margin-top: 4px;
+    margin-right: 10px;
+}
   

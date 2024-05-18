@@ -1,6 +1,7 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import React, { useEffect, useState } from 'react';
 import 'react-toastify/dist/ReactToastify.css';
+import axios from 'axios';
 
 import HomePage from './components/HomePage';
 import AuthenticationLayout from './components/AuthenticationLayout';
@@ -15,12 +16,15 @@ import { ToastProvider } from './components/ToastProvider';
 import './styles/App.css';
 import { getCookie } from './utils/functions';
 import { setAxiosCookieHeader } from './utils/functions';
+import * as routes from './config/routes';
+
 
 
 
 function App() {
 
   let [loggedIn, setLoggedIn] = useState(false);
+  let [userID, setUserID] = useState();
 
   useEffect(() => {
     const link = document.createElement('link');
@@ -31,6 +35,11 @@ function App() {
     if(document.cookie) {
       setLoggedIn(true);
       setAxiosCookieHeader(cookie);
+      axios.get(routes.GET_USER_ID).then((res) => {
+        setUserID(res.user_id);
+      }).catch((err) => {
+        console.error(err);
+      })
     }
     
     return () => {
@@ -47,10 +56,10 @@ function App() {
             <NavigationBar loggedIn={loggedIn} setLoggedIn={setLoggedIn} />
             <Routes>
               <Route path="/" element={<HomePage />} />
-              <Route path="auth" element={<AuthenticationLayout setLoggedIn={setLoggedIn} />} />
+              <Route path="auth" element={<AuthenticationLayout setLoggedIn={setLoggedIn} setUserID={setUserID} />} />
               <Route path="test" element={<h1>Hello World!</h1>} />
-              <Route path="problems" element={<ProblemsPage />} />
-              <Route path="problems/:id/submit" element={<SubmitPage />} />
+              <Route exact path="problems" element={<ProblemsPage />} />
+              <Route path="problems/:id/submit" element={<SubmitPage userID={userID}/>} />
               <Route path="ranking" element={<RankingPage />} />
               <Route path="profile" element={<ProfilePage loggedIn={loggedIn}/>} />
             </Routes>

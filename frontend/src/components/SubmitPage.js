@@ -1,19 +1,21 @@
 import axios from 'axios';
 import { useState, Suspense } from 'react';
 import { Container, Row, Col, Form, Button, Spinner } from 'react-bootstrap';
-import { useParams } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
+import ProblemDifficultyBar from './ProblemDifficultyBar';
 
 import { useToast } from './ToastProvider';
 import CodeEditor from './CodeEditor';
 import '../styles/SubmitPage.css';
 
-function SubmitPage() {
+function SubmitPage({userID}) {
   const showToast = useToast();
+  const location = useLocation();
+  const { problem } = location.state || {};
   const [language, setLanguage] = useState('c_cpp');
   const [editorContent, setEditorContent] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const { id } = useParams();
-
+  
   const handleCodeChange = (newCode) => {
     setEditorContent(newCode);
   };
@@ -43,7 +45,7 @@ function SubmitPage() {
 
     setIsLoading(true); 
     try {
-      const response = await axios.post(`http://127.0.0.1:5000/problems/${id}/submit`, payload, {
+      const response = await axios.post(`http://127.0.0.1:5000/problems/${problem.id}/submit`, payload, {
         headers: {
           'Content-Type': 'application/json'
         }
@@ -64,6 +66,11 @@ function SubmitPage() {
           message = `Keep trying! ${passedTests} out of ${totalTests} tests passed.`;
         }
       }
+      axios.post(`http://127.0.0.1:5000/started_tasks/add`, {
+          "user_id": userID,
+          "task_id": problem.id,
+          "status": passedPercentage === 100
+      })
 
       showToast('(☞ﾟヮﾟ)☞ ' + message, alertType);
     } catch (error) {
@@ -75,13 +82,13 @@ function SubmitPage() {
 
   return (
     <Container>
-      <h1 className="my-3 text-center">Submit your solution</h1>
+      <h1 className="my-3 text-center">Submit your solution to {problem.name}</h1>
       <Form onSubmit={handleSubmit}>
         <Row className="my-4">
           <Col className="editorContainer">
-            <h2 className="editorHeader">Code Editor</h2>
             <Row>
-              <Col md={6}>
+              <Col md={4}>
+                <h2 className="editorHeader">Code Editor</h2>
                 <Form.Group controlId="formLanguageSelect">
                   <Form.Label>Select Language</Form.Label>
                   <Form.Control as="select" className="formControl" value={language} onChange={(e) => setLanguage(e.target.value)}>
@@ -89,18 +96,26 @@ function SubmitPage() {
                     <option value="python">Python</option>
                   </Form.Control>
                 </Form.Group>
-              </Col>
-              <Col md={6}>
-                <Form.Group>
+                <Form.Group style={{marginBottom: 25}}>
                   <Form.Label>Choose File</Form.Label>
                   <Form.Control
                     type="file"
-                    id={`fileUpload-${id}`}
+                    id={`fileUpload-${problem.id}`}
                     label="Choose file"
                     onChange={handleFileChange}
                     accept=".py,.c"
                   />
                 </Form.Group>
+              </Col>
+              <Col md={1}>
+              </Col>
+              <Col md={7}>
+                <h2 className="editorHeader">Description</h2>
+                <p className="description">{problem.description}</p>
+                <div className="d-flex align-items-center">
+                  <h2 className="editorPoints">Points:</h2>
+                  <ProblemDifficultyBar points={problem.points} width={25} height={25}/>
+                </div>
               </Col>
             </Row>
             <Suspense fallback={<div>Loading...</div>}>

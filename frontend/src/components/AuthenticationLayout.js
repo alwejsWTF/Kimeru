@@ -11,7 +11,7 @@ import * as routes from '../config/routes';
 
 import { useToast } from './ToastProvider';
 
-export default function AuthenticationLayout({setLoggedIn}) {
+export default function AuthenticationLayout({ setLoggedIn, setUserID }) {
 
   let [nickname, setNickname] = useState("");
   let [password, setPassword] = useState("");
@@ -25,8 +25,8 @@ export default function AuthenticationLayout({setLoggedIn}) {
 
   const changeAuthMode = () => {
     setFormTitle(authMode === "login" ? "Sign up" : "Sign in");
-    setAuthModeText(authMode === "login" ? "Already have an account?" 
-                                          : "Still don't have an account?");
+    setAuthModeText(authMode === "login" ? "Already have an account?"
+      : "Still don't have an account?");
     setAuthModeLink(authMode === "login" ? "Sign in" : "Sign up");
     setAuthMode(authMode === "login" ? "register" : "login");
   }
@@ -37,14 +37,17 @@ export default function AuthenticationLayout({setLoggedIn}) {
       "password": password
     }
     try {
-      const response = await axios.post(routes.SIGN_IN, credentials, {withCredentials: true});
+      const response = await axios.post(routes.SIGN_IN, credentials, { withCredentials: true });
 
       let cookie = getCookie("csrf_access_token");
       setAxiosCookieHeader(cookie);
       showToast(response.data.message, "success");
       setLoggedIn(true);
       navigate("/");
-    } catch(err) {
+
+      const res = await axios.get(routes.GET_USER_ID);
+      setUserID(res.data.user_id);
+    } catch (err) {
       console.log(err);
       showToast(err.response.data.message, "danger")
     }
@@ -59,12 +62,12 @@ export default function AuthenticationLayout({setLoggedIn}) {
       const response = await axios.post(routes.SIGN_UP, credentials);
       showToast(response.data.message, "success");
       loginUser();
-    } catch(err) {
+    } catch (err) {
       showToast(err.response.data.message, "danger");
     }
   }
 
-  const performAuthAction = async() => {
+  const performAuthAction = async () => {
     return authMode === "login" ? loginUser() : registerUser();
   }
 
@@ -75,12 +78,12 @@ export default function AuthenticationLayout({setLoggedIn}) {
         <Form.Group className="mb-3">
           <Form.Label>Nickname: </Form.Label>
           <Form.Control placeholder="Enter nickname" value={nickname}
-           onChange={(e) => {setNickname(e.target.value)}} />
+            onChange={(e) => { setNickname(e.target.value) }} />
         </Form.Group>
         <Form.Group className="mb-5">
           <Form.Label>Password: </Form.Label>
           <Form.Control type="password" placeholder="Enter password" value={password}
-           onChange={(e) => {setPassword(e.target.value)}} />
+            onChange={(e) => { setPassword(e.target.value) }} />
         </Form.Group>
         <Form.Text className="text-center mb-4">
           {authModeText} <span type="button" className="text-primary" onClick={changeAuthMode}>{authModeLink}</span>
