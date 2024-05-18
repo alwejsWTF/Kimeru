@@ -1,4 +1,4 @@
-const ProblemDifficultyBar = ({ points, width, height }) => {
+const ProblemDifficultyBar = ({ points, width, height, mb }) => {
     const totalSquares = 10;
 
     const getColor = (index) => {
@@ -17,6 +17,7 @@ const ProblemDifficultyBar = ({ points, width, height }) => {
                     height: `${height}px`,
                     backgroundColor: getColor(i + 1),
                     border: '1px solid #333',
+                    marginBottom:  `${mb}px`,
                 }} />
             ))}
         </div>

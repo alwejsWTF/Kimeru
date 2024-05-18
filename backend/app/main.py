@@ -132,6 +132,7 @@ def get_id():
 
 
 @app.post("/problems/<problem_id>/submit")
+@fje.jwt_required()
 def submit(problem_id):
     req = request.get_json()
     if 'lang' not in req:
@@ -191,6 +192,7 @@ def submit(problem_id):
 
 
 @app.get("/started_tasks/<user_id>")
+@fje.jwt_required()
 def get_started_tasks(user_id):
     if not auth.check_user_exists(user_id):
         response = {"message": "User with given ID does not exist"}
@@ -259,6 +261,7 @@ def get_ranking():
 
 
 @app.post("/started_tasks/add")
+@fje.jwt_required()
 def add_started_task():
     req = request.get_json()
     ranking.add_started_tasks(req["user_id"], req["task_id"], req["status"])

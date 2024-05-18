@@ -114,21 +114,27 @@ function SubmitPage({userID}) {
                 <p className="description">{problem.description}</p>
                 <div className="d-flex align-items-center">
                   <h2 className="editorPoints">Points:</h2>
-                  <ProblemDifficultyBar points={problem.points} width={25} height={25}/>
+                  <ProblemDifficultyBar points={problem.points} width={25} height={25} mb={8}/>
                 </div>
               </Col>
             </Row>
             <Suspense fallback={<div>Loading...</div>}>
               <CodeEditor className="aceEditor" language={language} value={editorContent} onChange={handleCodeChange} />
             </Suspense>
-            <Button variant="primary" type="submit" className="font mt-3 submitButton" disabled={isLoading}>
-              {isLoading ? (
-                <>
-                  <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
-                  <span className="ms-3 sr-only">Submitting...</span>
-                </>
-              ) : "Submit Code"}  
-            </Button>
+            {typeof userID !== 'undefined' ? (
+              <Button variant="primary" type="submit" className="font mt-3 submitButton" disabled={isLoading}>
+                {isLoading ? (
+                  <>
+                    <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
+                    <span className="ms-3 sr-only">Submitting...</span>
+                  </>
+                ) : "Submit Code"}  
+              </Button>
+            ) : 
+              <h4 style={{float: 'right', marginTop: '15px', marginBottom: '0px'}}>
+                <strong>Please log in to submit your answer</strong>
+              </h4>
+            }
           </Col>
         </Row>
       </Form>
