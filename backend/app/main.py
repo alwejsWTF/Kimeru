@@ -73,7 +73,7 @@ def login():
     credentials = request.json
     user = auth.get_user(credentials["nickname"])
     if user is None:
-        response = {"message": "Incorrect nickname"}
+        response = {"message": "Incorrect credentials"}
         return response, 400
     if check_password_hash(user.password, credentials["password"]):
         token = fje.create_access_token(identity=user.nick)
@@ -84,7 +84,7 @@ def login():
         response.__dict__["headers"].setlist("Set-Cookie", modified_headers)
         return response, 200
     else:
-        response = {"message": "Incorrect password"}
+        response = {"message": "Incorrect credentials"}
         return response, 400
 
 

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { useState, Suspense } from 'react';
+import { useState, Suspense, useCallback } from 'react';
 import { Container, Row, Col, Form, Button, Spinner } from 'react-bootstrap';
 import { useLocation } from 'react-router-dom';
 import ProblemDifficultyBar from './ProblemDifficultyBar';
@@ -16,16 +16,25 @@ function SubmitPage({userID}) {
   const [editorContent, setEditorContent] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   
-  const handleCodeChange = (newCode) => {
+  const handleCodeChange = useCallback((newCode) => {
     setEditorContent(newCode);
-  };
+  }, []);
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     if (file) {
+      const validExtensions = ['.c', '.cpp', '.py'];
+      const fileExtension = file.name.slice(file.name.lastIndexOf('.')).toLowerCase();
+      if (!validExtensions.includes(fileExtension)) {
+        showToast('Invalid file type. Only C and Python files are allowed.', 'danger');
+        return;
+      }
       const reader = new FileReader();
       reader.onload = function (e) {
         setEditorContent(e.target.result);
+      };
+      reader.onerror = function () {
+        showToast('Error reading file.', 'danger');
       };
       reader.readAsText(file);
     }
