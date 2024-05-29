@@ -36,7 +36,7 @@ function App() {
       setLoggedIn(true);
       setAxiosCookieHeader(cookie);
       axios.get(routes.GET_USER_ID).then((res) => {
-        setUserID(res.user_id);
+        setUserID(res.data.user_id);
         setJWT();
       }).catch((err) => {
         console.error(err);
