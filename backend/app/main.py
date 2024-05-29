@@ -78,21 +78,14 @@ def login():
     if check_password_hash(user.password, credentials["password"]):
         token = fje.create_access_token(identity=user.nick)
         response = jsonify({"message": "Successfully loged in"})
-        fje.set_access_cookies(response, token, max_age=timedelta(minutes=30))
+        fje.set_access_cookies(response, token)
         headers = response.__dict__['headers'].getlist("Set-Cookie")
-        modified_headers = add_partitioned_header(headers)
+        modified_headers = auth.add_partitioned_header(headers)
         response.__dict__["headers"].setlist("Set-Cookie", modified_headers)
         return response, 200
     else:
         response = {"message": "Incorrect credentials"}
         return response, 400
-
-
-def add_partitioned_header(cookies):
-    lst = []
-    for cookie in cookies:
-        lst.append(cookie + "; Partitioned")
-    return lst
 
 
 @app.post("/logout")
@@ -115,11 +108,13 @@ def get_profile():
                                      .where(User.nick == identity).select())
         if user_exists:
             user = auth.get_user(identity)
-            response = {"username": user.nick,
-                        "id": user.id}
+            response = jsonify({"username": user.nick,
+                                "id": user.id})
+            auth.refresh_expiring_jwts(response)
             return response, 200
         else:
-            response = {"message": "User cannot be found"}
+            response = jsonify({"message": "User cannot be found"})
+            auth.refresh_expiring_jwts(response)
             return response, 404
 
 
@@ -128,7 +123,9 @@ def get_profile():
 def get_id():
     identity = fje.get_jwt_identity()
     user = auth.get_user(identity)
-    return {"user_id": user.id}, 200
+    response = jsonify({"user_id": user.id})
+    auth.refresh_expiring_jwts(response)
+    return response, 200
 
 
 @app.post("/problems/<problem_id>/submit")
@@ -265,5 +262,6 @@ def get_ranking():
 def add_started_task():
     req = request.get_json()
     ranking.add_started_tasks(req["user_id"], req["task_id"], req["status"])
-
-    return {"message": "Successfully added"}, 200
+    response = jsonify({"message": "Successfully added"})
+    auth.refresh_expiring_jwts(response)
+    return response, 200

@@ -7,6 +7,7 @@ import '../styles/ProfilePage.css';
 import { useToast } from './ToastProvider';
 import { FaCheck, FaXmark } from "react-icons/fa6";
 import { useNavigate } from 'react-router-dom';
+import { setJWT } from '../utils/functions';
 
 function StatusMark({status}) {
   if (status) {
@@ -26,6 +27,7 @@ function Profile({loggedIn}) {
     if (loggedIn) {
       axios.get(routes.GET_PROFILE_INFO).then((res) => {
         setUserProfile({ id: res.data.id, username: res.data.username, email: 'user1@example.com' });
+        setJWT();
       }).catch((err) => {
         showToast(err.response.data.message, "danger");
       })

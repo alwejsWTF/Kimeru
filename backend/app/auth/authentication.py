@@ -50,6 +50,12 @@ class Authentication:
                                    .filter_by(jti=jti))
             return token is not None
 
+    def add_partitioned_header(self, cookies):
+        lst = []
+        for cookie in cookies:
+            lst.append(cookie + "; Partitioned")
+        return lst
+
     def refresh_expiring_jwts(self, response):
         try:
             exp_timestamp = fje.get_jwt()["exp"]
@@ -58,12 +64,10 @@ class Authentication:
             if target_timestamp > exp_timestamp:
                 jwt = fje.create_access_token(identity=fje.get_jwt_identity())
                 fje.set_access_cookies(response, jwt)
-                #response.set_cookie(value=jwt,
-                #                    secure=True,
-                #                    httponly=True,
-                #                    path="/",
-                #                    samesite="None",
-                #                    partitioned=True)
+                headers = response.__dict__['headers'].getlist("Set-Cookie")
+                modified_headers = self.add_partitioned_header(headers)
+                response.__dict__["headers"].setlist("Set-Cookie",
+                                                     modified_headers)
             return response
         except (RuntimeError, KeyError):
             return response

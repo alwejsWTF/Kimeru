@@ -10,3 +10,8 @@ export function setAxiosCookieHeader(cookie) {
     axios.defaults.headers.post["X-CSRF-TOKEN"] = cookie;
     axios.defaults.withCredentials = true;
 }
+
+export function setJWT() {
+    let cookie = getCookie("csrf_access_token");
+    setAxiosCookieHeader(cookie);
+}
