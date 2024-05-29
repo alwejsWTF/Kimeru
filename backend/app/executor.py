@@ -52,7 +52,7 @@ def process_submission(lang, code, tests, port):
         pass
 
     container = docker_client.containers.get(container_name)
-    container.stop()
+    container.kill()
     container.remove()
 
     return res
