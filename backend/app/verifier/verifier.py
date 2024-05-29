@@ -27,6 +27,8 @@ EXECUTE_COMMANDS = {
     'python': "python3",
 }
 
+DEFAULT_TIMEOUT = 1.0 # Default timeout for each test execution in seconds
+
 @app.route("/", methods=['POST'])
 def serve():
     if not request.is_json:
@@ -39,6 +41,10 @@ def serve():
         logging.info(f"Language: {content['lang']}")
 
         lang = content['lang']
+
+        timeout = DEFAULT_TIMEOUT
+        if 'timeout' in content:
+            timeout = float(content['timeout'])
 
         with open(SOURCE_FILES[content['lang']], "w") as f:
             f.write(content["code"])
@@ -59,7 +65,8 @@ def serve():
                 if EXECUTE_COMMANDS[lang] != "" \
                 else [f"./{BINARY_FILES[lang]}"]
 
-            result = subprocess.run(cmd, stdout=subprocess.PIPE, input=input)
+            result = subprocess.run(cmd, stdout=subprocess.PIPE, input=input,
+                                    timeout=timeout)
             output = result.stdout.decode("utf-8").rstrip()
 
             if result.returncode != 0 or output != expected:
@@ -75,3 +82,5 @@ def serve():
         return json.dumps(res).encode("utf-8")
     except KeyError:
         return { "error": "Invalid data" }
+    except subprocess.TimeoutExpired:
+        return { "error": "Timeout" }

@@ -21,11 +21,11 @@ def load_image():
         docker_client.images.build(path="./app/verifier/", tag=IMAGE_NAME)
 
 
-def process_submission(lang, code, tests, port):
+def process_submission(lang, code, tests, port, timeout=1):
     load_image()
 
     container_name = f"{IMAGE_NAME}-{port}"
-    command = f"flask --app verifier run --host=0.0.0.0 -p {port}"
+    command = f"flask run --host=0.0.0.0 -p {port}"
 
     res = {"status": "failure"}
     try:
@@ -39,6 +39,7 @@ def process_submission(lang, code, tests, port):
             "lang": lang,
             "code": code,
             "tests": tests,
+            "timeout": timeout,
         }
         http = urllib3.PoolManager()
         time.sleep(1)
