@@ -45,6 +45,7 @@ export default function AuthenticationLayout({ setLoggedIn, setUserID }) {
 
       const res = await axios.get(routes.GET_USER_ID);
       setUserID(res.data.user_id);
+      setJWT();
     } catch (err) {
       console.log(err);
       showToast(err.response.data.message, "danger")
