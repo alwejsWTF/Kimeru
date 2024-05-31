@@ -7,6 +7,7 @@ import ProblemDifficultyBar from './ProblemDifficultyBar';
 import { useToast } from './ToastProvider';
 import CodeEditor from './CodeEditor';
 import '../styles/SubmitPage.css';
+import { setJWT } from '../utils/functions';
 
 function SubmitPage({userID}) {
   const showToast = useToast();
@@ -75,11 +76,12 @@ function SubmitPage({userID}) {
           message = `Keep trying! ${passedTests} out of ${totalTests} tests passed.`;
         }
       }
-      axios.post(`http://127.0.0.1:5000/started_tasks/add`, {
+      await axios.post(`http://127.0.0.1:5000/started_tasks/add`, {
           "user_id": userID,
           "task_id": problem.id,
           "status": passedPercentage === 100
       })
+      setJWT();
 
       showToast('(☞ﾟヮﾟ)☞ ' + message, alertType);
     } catch (error) {

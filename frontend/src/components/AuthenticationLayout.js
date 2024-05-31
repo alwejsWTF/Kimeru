@@ -5,8 +5,7 @@ import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
 import '../styles/AuthenticationLayout.css';
-import { getCookie } from '../utils/functions';
-import { setAxiosCookieHeader } from '../utils/functions';
+import { setJWT } from '../utils/functions';
 import * as routes from '../config/routes';
 
 import { useToast } from './ToastProvider';
@@ -39,14 +38,14 @@ export default function AuthenticationLayout({ setLoggedIn, setUserID }) {
     try {
       const response = await axios.post(routes.SIGN_IN, credentials, { withCredentials: true });
 
-      let cookie = getCookie("csrf_access_token");
-      setAxiosCookieHeader(cookie);
+      setJWT();
       showToast(response.data.message, "success");
       setLoggedIn(true);
       navigate("/");
 
       const res = await axios.get(routes.GET_USER_ID);
       setUserID(res.data.user_id);
+      setJWT();
     } catch (err) {
       console.log(err);
       showToast(err.response.data.message, "danger")

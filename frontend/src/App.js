@@ -14,7 +14,7 @@ import SubmitPage from './components/SubmitPage';
 import { ToastProvider } from './components/ToastProvider';
 
 import './styles/App.css';
-import { getCookie } from './utils/functions';
+import { getCookie, setJWT } from './utils/functions';
 import { setAxiosCookieHeader } from './utils/functions';
 import * as routes from './config/routes';
 
@@ -37,6 +37,7 @@ function App() {
       setAxiosCookieHeader(cookie);
       axios.get(routes.GET_USER_ID).then((res) => {
         setUserID(res.user_id);
+        setJWT();
       }).catch((err) => {
         console.error(err);
       })
