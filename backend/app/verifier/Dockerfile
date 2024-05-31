@@ -8,4 +8,4 @@ RUN apt-get update \
         python3 \
         python3-flask
 
-COPY verifier.py /app/app.py
+COPY verifier.py /app/verifier.py

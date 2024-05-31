@@ -25,7 +25,7 @@ def process_submission(lang, code, tests, port, timeout=1):
     load_image()
 
     container_name = f"{IMAGE_NAME}-{port}"
-    command = f"flask run --host=0.0.0.0 -p {port}"
+    command = f"flask --app verifier run --host=0.0.0.0 -p {port}"
 
     res = {"status": "failure"}
     try:
