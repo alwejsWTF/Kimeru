@@ -60,30 +60,43 @@ function SubmitPage({userID}) {
           'Content-Type': 'application/json'
         }
       });
-      const passedTests = response.data.test_results.filter(result => result).length;
-      const totalTests = response.data.test_results.length;
-      const passedPercentage = (passedTests / totalTests) * 100;
 
-      let alertType = "success";
-      let message = `Great job! All ${passedTests} out of ${totalTests} tests passed.`;
-
-      if (passedPercentage < 100) {
-        if (passedPercentage >= 50) {
-          alertType = "warning";
-          message = `Almost there! ${passedTests} out of ${totalTests} tests passed.`;
-        } else {
-          alertType = "danger";
-          message = `Keep trying! ${passedTests} out of ${totalTests} tests passed.`;
-        }
+      let update_status = async (status) => {
+        await axios.post(`http://127.0.0.1:5000/started_tasks/add`, {
+            "user_id": userID,
+            "task_id": problem.id,
+            "status": status
+        })
       }
-      await axios.post(`http://127.0.0.1:5000/started_tasks/add`, {
-          "user_id": userID,
-          "task_id": problem.id,
-          "status": passedPercentage === 100
-      })
-      setJWT();
 
-      showToast('(☞ﾟヮﾟ)☞ ' + message, alertType);
+      if (typeof(response.data.test_results) !== 'undefined') {
+        const passedTests = response.data.test_results.filter(result => result).length;
+        const totalTests = response.data.test_results.length;
+        const passedPercentage = (passedTests / totalTests) * 100;
+
+        let alertType = "success";
+        let message = `Great job! All ${passedTests} out of ${totalTests} tests passed.`;
+
+        if (passedPercentage < 100) {
+          if (passedPercentage >= 50) {
+            alertType = "warning";
+            message = `Almost there! ${passedTests} out of ${totalTests} tests passed.`;
+          } else {
+            alertType = "danger";
+            message = `Keep trying! ${passedTests} out of ${totalTests} tests passed.`;
+          }
+        }
+
+        showToast('(☞ﾟヮﾟ)☞ ' + message, alertType);
+        update_status(passedPercentage === 100);
+      } else {
+        let alertType = "danger";
+        let message = `Timeout`;
+
+        showToast('⏲️ ' + message, alertType);
+        update_status(false);
+      }
+      setJWT();
     } catch (error) {
       console.log(error);
       showToast(error.response?.data?.message || "Failed to upload code", "danger");
