@@ -21,7 +21,7 @@ def load_image():
         docker_client.images.build(path="./app/verifier/", tag=IMAGE_NAME)
 
 
-def process_submission(lang, code, tests, port):
+def process_submission(lang, code, tests, port, timeout=1):
     load_image()
 
     container_name = f"{IMAGE_NAME}-{port}"
@@ -39,6 +39,7 @@ def process_submission(lang, code, tests, port):
             "lang": lang,
             "code": code,
             "tests": tests,
+            "timeout": timeout,
         }
         http = urllib3.PoolManager()
         time.sleep(1)
@@ -52,7 +53,7 @@ def process_submission(lang, code, tests, port):
         pass
 
     container = docker_client.containers.get(container_name)
-    container.stop()
+    container.kill()
     container.remove()
 
     return res
