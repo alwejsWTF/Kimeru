@@ -9,4 +9,12 @@
     margin-top: 20px;
     border-radius: 5px;
 }
+
+.recommendation-list {
+    list-style-type: none;
+    padding: 0;
+}
   
+.recommendation-list-item {
+    margin-bottom: 10px;
+}

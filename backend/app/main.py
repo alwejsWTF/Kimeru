@@ -215,14 +215,27 @@ def get_all_tags():
 @app.get('/task/<problem_id>')
 def get_task(problem_id):
     with Session() as session:
-        task = session.query(Task).filter(Task.id == problem_id).one_or_none()
+        task = session.query(
+            Task.id,
+            Task.name,
+            Task.description,
+            Task.points,
+            func.string_agg(Tag.name, ', ').label('tags')
+        ).join(
+            Task.tags
+        ).where(
+            Task.id == problem_id
+        ).group_by(
+            Task.id
+        ).one_or_none()
         if not task:
             return jsonify({"message": "Task not found"}), 404
         task_json = {
             'id': task.id,
             'name': task.name,
             'description': task.description,
-            'points': task.points
+            'points': task.points,
+            'tags': task.tags
         }
         return jsonify(task_json), 200
 
