@@ -96,6 +96,9 @@ def logout():
     auth.block_token(jti, now)
     response = jsonify({"message": "Successfully loged out"})
     fje.unset_jwt_cookies(response)
+    headers = response.__dict__['headers'].getlist("Set-Cookie")
+    modified_headers = auth.add_partitioned_header(headers)
+    response.__dict__["headers"].setlist("Set-Cookie", modified_headers)
     return response, 200
 
 

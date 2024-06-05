@@ -53,7 +53,7 @@ class Authentication:
     def add_partitioned_header(self, cookies):
         lst = []
         for cookie in cookies:
-            lst.append(cookie + "; Partitioned")
+            lst.append(cookie + "; Partitioned;")
         return lst
 
     def refresh_expiring_jwts(self, response):
