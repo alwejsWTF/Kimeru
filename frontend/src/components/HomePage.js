@@ -7,7 +7,7 @@ function HomePage() {
     <Container className="font home-container">
       <Row className="bannerRow">
         <Col md={4} className="bannerTextCol">
-          <h1 className="bannerTitle">Welcome to SPOJ </h1>
+          <h1 className="bannerTitle">Welcome to Kimeru</h1>
           <p className="bannerSubtitle">The place to test your coding skills and compete with others.</p>
           <Button href="/problems" variant="primary" size="lg" className="bannerButton">Explore Problems</Button>
           <Button href="/ranking" variant="primary" size="lg" className="bannerButton mt-2">View Rankings</Button>

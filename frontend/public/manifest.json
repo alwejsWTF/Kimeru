@@ -1,6 +1,6 @@
 {
-  "short_name": "SPOJ",
-  "name": "Workshop SPOJ web app",
+  "short_name": "Kimeru",
+  "name": "Kimeru: Competitive programming challanges",
   "start_url": ".",
   "display": "standalone",
   "theme_color": "#000000",
