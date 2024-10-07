@@ -5,7 +5,7 @@ export default function Footer() {
         <footer className="font footer">
             <div className="container">
                 <div className="row">
-                    <p className="fo-text">&copy; {new Date().getFullYear()} SPOJ</p>
+                    <p className="fo-text">&copy; {new Date().getFullYear()} Kimeru</p>
                 </div>
             </div>
         </footer>
