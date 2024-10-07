@@ -40,4 +40,4 @@ Finally, go to <http://127.0.0.1:3000> (<http://localhost:3000> will not work pr
 
 ## License
 
-[MIT](https://github.com/alwejsWTF/Workshop/blob/master/LICENSE)
+[MIT](https://github.com/alwejsWTF/Kimeru/blob/main/LICENSE)
